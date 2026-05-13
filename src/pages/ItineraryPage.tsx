@@ -22,13 +22,11 @@ export function ItineraryPage() {
     // If today has events, use them; otherwise use first day's events
     if (todayEvents.length > 0) {
       setCurrentDayEvents(todayEvents)
-    } else {
+    } else if (loadedEvents.length > 0) {
       // Find the first day with events
-      const firstDate = loadedEvents.length > 0 ? loadedEvents[0].date : null
-      if (firstDate) {
-        const firstDayEvents = loadedEvents.filter((event) => event.date === firstDate)
-        setCurrentDayEvents(firstDayEvents)
-      }
+      const firstDate = loadedEvents[0].date
+      const firstDayEvents = loadedEvents.filter((event) => event.date === firstDate)
+      setCurrentDayEvents(firstDayEvents)
     }
 
     setIsLoading(false)

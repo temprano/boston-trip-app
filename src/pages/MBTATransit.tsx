@@ -104,6 +104,8 @@ interface IncludedTrip {
   attributes: { headsign: string; name: string }
 }
 
+type IncludedItem = IncludedStop | IncludedTrip
+
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const API_BASE = 'https://api-v3.mbta.com'
@@ -372,24 +374,26 @@ export function MBTATransit({ defaultStopId }: MBTATransitProps) {
 
         const result = await mbtaFetch<{
           data: Prediction[]
-          included: Array<
-            | IncludedStop
-            | IncludedTrip
-            | Route
-            | { type: string; id: string; attributes: Vehicle['attributes']; relationships: Vehicle['relationships'] }
-          >
+          included: Array<{
+            type: string
+            id: string
+            attributes: Record<string, unknown>
+            relationships?: Record<string, unknown>
+          }>
         }>(path, predLastMod.current ?? undefined)
 
         if (!result.notModified) {
           predLastMod.current = result.lastModified
           setPredictions(result.data?.data || [])
-          setIncludedStops((result.data?.included?.filter((i: any) => i.type === 'stop') as IncludedStop[]) || [])
-          setIncludedTrips((result.data?.included?.filter((i: any) => i.type === 'trip') as IncludedTrip[]) || [])
-          setRoutes((result.data?.included?.filter((i: any) => i.type === 'route') as Route[]) || [])
+          if (result.data?.included) {
+            setIncludedStops(result.data.included.filter((i) => i.type === 'stop') as any as IncludedStop[])
+            setIncludedTrips(result.data.included.filter((i) => i.type === 'trip') as any as IncludedTrip[])
+            setRoutes(result.data.included.filter((i) => i.type === 'route') as any as Route[])
+          }
           setLastUpdated(new Date())
         }
-      } catch (err: any) {
-        setError(err.message ?? 'Failed to load predictions')
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : 'Failed to load predictions')
       } finally {
         setLoading(false)
       }
@@ -439,7 +443,7 @@ export function MBTATransit({ defaultStopId }: MBTATransitProps) {
 
       const result = await mbtaFetch<{
         data: Vehicle[]
-        included: any[]
+        included: IncludedItem[]
       }>(path, vehicleLastMod.current ?? undefined)
 
       if (!result.notModified && result.data?.data) {
