@@ -1,0 +1,172 @@
+[
+  {
+    "id": "1",
+    "name": "Jeff Svehla",
+    "avatar": "/img/Jeff_thumbnail.png",
+    "contact": {
+      "email": "",
+      "phone": "(402) 910-5996"
+    },
+    "flightInfo": {
+      "arrivalAirline": "American Airlines",
+      "arrivalFlightNumber": "AA123",
+      "arrivalTime": "2:00pm",
+      "departureAirline": "American Airlines",
+      "departureFlightNumber": "AA564",
+      "departureTime": "11:00am"
+    }
+  },
+  {
+    "id": "2",
+    "name": "Deb Svehla",
+    "avatar": "/img/Deb_thumbnail.png",
+    "contact": {
+      "email": "",
+      "phone": "(402) 910-8202"
+    },
+    "flightInfo": {
+      "arrivalAirline": "American Airlines",
+      "arrivalFlightNumber": "AA123",
+      "arrivalTime": "2:00pm",
+      "departureAirline": "American Airlines",
+      "departureFlightNumber": "AA564",
+      "departureTime": "11:00am"
+    }
+  },
+  {
+    "id": "3",
+    "name": "Darrin Pecka",
+    "avatar": "/img/Darrin_thumbnail.png",
+    "contact": {
+      "email": "",
+      "phone": "(402) 555-5555"
+    },
+    "flightInfo": {
+      "arrivalAirline": "American Airlines",
+      "arrivalFlightNumber": "AA123",
+      "arrivalTime": "2:00pm",
+      "departureAirline": "American Airlines",
+      "departureFlightNumber": "AA564",
+      "departureTime": "11:00am"
+    }
+  },
+  {
+    "id": "4",
+    "name": "Allie Pecka",
+    "avatar": "/img/Allie_thumbnail.png",
+    "contact": {
+      "email": "",
+      "phone": "(402) 555-5555"
+    },
+    "flightInfo": {
+      "arrivalAirline": "American Airlines",
+      "arrivalFlightNumber": "AA123",
+      "arrivalTime": "2:00pm",
+      "departureAirline": "American Airlines",
+      "departureFlightNumber": "AA564",
+      "departureTime": "11:00am"
+    }
+  },
+  {
+    "id": "5",
+    "name": "Austin Svehla",
+    "avatar": "/img/Austin_thumbnail.png",
+    "contact": {
+      "email": "",
+      "phone": "(402) 942-4687"
+    },
+    "flightInfo": {
+      "arrivalAirline": "American Airlines",
+      "arrivalFlightNumber": "AA123",
+      "arrivalTime": "2:00pm",
+      "departureAirline": "American Airlines",
+      "departureFlightNumber": "AA564",
+      "departureTime": "11:00am"
+    }
+  },
+  {
+    "id": "6",
+    "name": "Lauren Wagner",
+    "avatar": "/img/Lauren_thumbnail.png",
+    "contact": {
+      "email": "",
+      "phone": "(402) 555-5555"
+    },
+    "flightInfo": {
+      "arrivalAirline": "American Airlines",
+      "arrivalFlightNumber": "AA123",
+      "arrivalTime": "2:00pm",
+      "departureAirline": "American Airlines",
+      "departureFlightNumber": "AA564",
+      "departureTime": "11:00am"
+    }
+  },
+  {
+    "id": "7",
+    "name": "Joe Earley",
+    "avatar": "/img/Joe_thumbnail.png",
+    "contact": {
+      "email": "",
+      "phone": "(602) 363-9035"
+    },
+    "flightInfo": {
+      "arrivalAirline": "American Airlines",
+      "arrivalFlightNumber": "AA123",
+      "arrivalTime": "2:00pm",
+      "departureAirline": "American Airlines",
+      "departureFlightNumber": "AA564",
+      "departureTime": "11:00am"
+    }
+  },
+  {
+    "id": "8",
+    "name": "Dierdre Earley",
+    "avatar": "/img/Dierdre_thumbnail.png",
+    "contact": {
+      "email": "",
+      "phone": "(602) 363-9036"
+    },
+    "flightInfo": {
+      "arrivalAirline": "American Airlines",
+      "arrivalFlightNumber": "AA123",
+      "arrivalTime": "2:00pm",
+      "departureAirline": "American Airlines",
+      "departureFlightNumber": "AA564",
+      "departureTime": "11:00am"
+    }
+  },
+  {
+    "id": "9",
+    "name": "Kyle Svehla",
+    "avatar": "/img/Kyle_thumbnail.png",
+    "contact": {
+      "email": "",
+      "phone": "(402) 555-5555"
+    },
+    "flightInfo": {
+      "arrivalAirline": "American Airlines",
+      "arrivalFlightNumber": "AA123",
+      "arrivalTime": "2:00pm",
+      "departureAirline": "American Airlines",
+      "departureFlightNumber": "AA564",
+      "departureTime": "11:00am"
+    }
+  },
+  {
+    "id": "10",
+    "name": "Kaelyn Svehla",
+    "avatar": "/img/Kaelyn_thumbnail.png",
+    "contact": {
+      "email": "",
+      "phone": "(402) 555-5555"
+    },
+    "flightInfo": {
+      "arrivalAirline": "American Airlines",
+      "arrivalFlightNumber": "AA123",
+      "arrivalTime": "2:00pm",
+      "departureAirline": "American Airlines",
+      "departureFlightNumber": "AA564",
+      "departureTime": "11:00am"
+    }
+  }
+]
