@@ -51,12 +51,33 @@ export function ItineraryPage() {
   }
 
   return (
-    <div style={{ padding: '16px' }}>
+    <div style={{ padding: '16px', paddingBottom: '100px' }}>
       {/* Get the date for the header */}
       {currentDayEvents.length > 0 && (
         <>
-          {/* Weather header for the day */}
-          <WeatherBug date={currentDayEvents[0].date} />
+          {/* Weather header for today */}
+          <WeatherBug />
+
+          {/* Placeholder Card */}
+          <div
+            style={{
+              backgroundColor: '#ffffff',
+              borderRadius: '8px',
+              border: '2px dashed #cccccc',
+              padding: '16px',
+              marginTop: '16px',
+              minHeight: '140px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#999999',
+              fontSize: '14px',
+              fontWeight: 'bold',
+              textAlign: 'center',
+            }}
+          >
+            Add More Events
+          </div>
 
           {/* Events for the day */}
           <div
