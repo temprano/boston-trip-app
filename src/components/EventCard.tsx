@@ -64,8 +64,8 @@ export function EventCard({ event, onMapClick, onTransitClick, onTicketsClick }:
                 position: 'absolute',
                 top: '14px',
                 right: '14px',
-                width: '98px',
-                height: '78px',
+                width: '96px',
+                height: '96px',
                 objectFit: 'cover',
                 borderRadius: '4px',
               }}
@@ -82,7 +82,7 @@ export function EventCard({ event, onMapClick, onTransitClick, onTicketsClick }:
               letterSpacing: '0.05em',
               lineHeight: '1.2',
               textTransform: 'uppercase',
-              paddingRight: '82px',
+              paddingRight: '110px',
             }}
           >
             {event.title}
