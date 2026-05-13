@@ -76,8 +76,9 @@ class DataSyncService {
    * Sync events from GitHub to localStorage
    */
   async syncEvents(): Promise<SyncResult> {
-    try {
-      // Fetch remote version
+    // DISABLED: GitHub raw content has CORS issues in browser deployments
+    return { synced: false, message: 'GitHub sync disabled' }
+  }
       const remoteVersion = await this.fetchFromGitHub<DataVersion>(EVENTS_VERSION_URL)
       if (!remoteVersion) {
         return { synced: false, message: 'Could not fetch remote version' }
@@ -114,8 +115,9 @@ class DataSyncService {
    * Sync travelers from GitHub to localStorage
    */
   async syncTravelers(): Promise<SyncResult> {
-    try {
-      // Fetch remote version
+    // DISABLED: GitHub raw content has CORS issues in browser deployments
+    return { synced: false, message: 'GitHub sync disabled' }
+  }
       const remoteVersion = await this.fetchFromGitHub<DataVersion>(TRAVELERS_VERSION_URL)
       if (!remoteVersion) {
         return { synced: false, message: 'Could not fetch remote version' }
