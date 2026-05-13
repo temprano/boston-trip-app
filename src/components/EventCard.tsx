@@ -10,10 +10,9 @@ interface EventCardProps {
   event: Event
   onMapClick?: (event: Event) => void
   onTransitClick?: (event: Event) => void
-  onTicketsClick?: (event: Event) => void
 }
 
-export function EventCard({ event, onMapClick, onTransitClick, onTicketsClick }: EventCardProps) {
+export function EventCard({ event, onMapClick, onTransitClick }: EventCardProps) {
   const navigate = useNavigate()
   const [showEditForm, setShowEditForm] = useState(false)
 
@@ -141,7 +140,6 @@ export function EventCard({ event, onMapClick, onTransitClick, onTicketsClick }:
         <EventCTABar
           onMapClick={() => onMapClick?.(event)}
           onTransitClick={handleTransitClick}
-          onTicketsClick={() => onTicketsClick?.(event)}
         />
       </div>
 

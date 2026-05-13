@@ -12,7 +12,7 @@ export function EventsSection({ title = 'Events & Activities' }: EventsSectionPr
   const [events, setEvents] = useState<Event[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
-  const [infoType, setInfoType] = useState<'map' | 'transit' | 'tickets' | null>(null)
+  const [infoType, setInfoType] = useState<'map' | 'transit' | null>(null)
 
   useEffect(() => {
     // Load events from local storage
@@ -44,11 +44,6 @@ export function EventsSection({ title = 'Events & Activities' }: EventsSectionPr
   const handleTransitClick = (event: Event) => {
     setSelectedEvent(event)
     setInfoType('transit')
-  }
-
-  const handleTicketsClick = (event: Event) => {
-    setSelectedEvent(event)
-    setInfoType('tickets')
   }
 
   const closeInfoPanel = () => {
@@ -101,7 +96,6 @@ export function EventsSection({ title = 'Events & Activities' }: EventsSectionPr
               events={eventsByDate[date]}
               onMapClick={handleMapClick}
               onTransitClick={handleTransitClick}
-              onTicketsClick={handleTicketsClick}
             />
           ))}
         </div>

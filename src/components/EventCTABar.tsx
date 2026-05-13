@@ -1,10 +1,9 @@
 interface EventCTABarProps {
   onMapClick?: () => void
   onTransitClick?: () => void
-  onTicketsClick?: () => void
 }
 
-export function EventCTABar({ onMapClick, onTransitClick, onTicketsClick }: EventCTABarProps) {
+export function EventCTABar({ onMapClick, onTransitClick }: EventCTABarProps) {
   return (
     <div
       style={{
@@ -52,25 +51,6 @@ export function EventCTABar({ onMapClick, onTransitClick, onTicketsClick }: Even
         title="Get Transit Info"
       >
         <img src="/icons/transit.png" alt="Transit" style={{ width: '48px', height: '48px' }} />
-      </button>
-
-      {/* Tickets Button */}
-      <button
-        onClick={onTicketsClick}
-        style={{
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '8px',
-          background: 'none',
-          border: 'none',
-          cursor: 'pointer',
-          color: '#ffffff',
-        }}
-        title="Get Tickets"
-      >
-        <img src="/icons/tickets.png" alt="Tickets" style={{ width: '48px', height: '48px' }} />
       </button>
     </div>
   )

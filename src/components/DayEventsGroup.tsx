@@ -7,7 +7,6 @@ interface DayEventsGroupProps {
   events: Event[]
   onMapClick?: (event: Event) => void
   onTransitClick?: (event: Event) => void
-  onTicketsClick?: (event: Event) => void
 }
 
 export function DayEventsGroup({
@@ -15,7 +14,6 @@ export function DayEventsGroup({
   events,
   onMapClick,
   onTransitClick,
-  onTicketsClick,
 }: DayEventsGroupProps) {
   return (
     <div style={{ marginBottom: '24px' }}>
@@ -32,7 +30,6 @@ export function DayEventsGroup({
             event={event}
             onMapClick={onMapClick}
             onTransitClick={onTransitClick}
-            onTicketsClick={onTicketsClick}
           />
         ))}
       </div>
