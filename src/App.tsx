@@ -7,6 +7,7 @@ import { eventDataService } from './services/eventDataService'
 import { Traveler, Event } from './types'
 import './App.css'
 
+// Build version: LATEST
 function App() {
   useEffect(() => {
     const loadData = async () => {
