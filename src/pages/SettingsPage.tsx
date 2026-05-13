@@ -1,64 +1,22 @@
 import { useState } from 'react'
 import { useAppStore } from '../store'
-import { Sun, Moon, QrCode, X } from 'lucide-react'
+import { QrCode, X } from 'lucide-react'
 import { WeatherWidget } from '../components/weather'
 
 export function SettingsPage() {
   const [showQR, setShowQR] = useState(false)
-  const theme = useAppStore((state) => state.theme)
   const isOffline = useAppStore((state) => state.isOffline)
-  const setTheme = useAppStore((state) => state.setTheme)
   const setIsOffline = useAppStore((state) => state.setIsOffline)
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 px-4 pb-20">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+        <h1 className="text-3xl font-bold text-white mb-2">
           Settings
         </h1>
-        <p className="text-gray-600 dark:text-gray-400">
+        <p className="text-white">
           Configure app preferences and behavior
         </p>
-      </div>
-
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Appearance
-        </h2>
-
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            {theme === 'dark' ? (
-              <Moon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-            ) : (
-              <Sun className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-            )}
-            <span className="text-gray-700 dark:text-gray-300">Theme</span>
-          </div>
-
-          <div className="flex gap-2">
-            <button
-              onClick={() => setTheme('light')}
-              className={`px-4 py-2 rounded-lg transition ${
-                theme === 'light'
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
-              }`}
-            >
-              Light
-            </button>
-            <button
-              onClick={() => setTheme('dark')}
-              className={`px-4 py-2 rounded-lg transition ${
-                theme === 'dark'
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
-              }`}
-            >
-              Dark
-            </button>
-          </div>
-        </div>
       </div>
 
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
@@ -68,10 +26,10 @@ export function SettingsPage() {
 
         <div className="flex items-center justify-between">
           <div>
-            <span className="text-gray-700 dark:text-gray-300">
+            <span className="text-white">
               Offline Mode
             </span>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+            <p className="text-sm text-white mt-1">
               {isOffline
                 ? 'Currently offline - using cached data'
                 : 'Currently online - syncing with server'}
@@ -99,8 +57,8 @@ export function SettingsPage() {
         <div className="flex items-center gap-4">
           <QrCode className="w-6 h-6 text-blue-500" />
           <div className="flex-1">
-            <p className="text-gray-700 dark:text-gray-300 font-medium">Share QR Code</p>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+            <p className="text-white font-medium">Share QR Code</p>
+            <p className="text-sm text-white mt-1">
               Display the QR code so team members can scan and join
             </p>
           </div>
@@ -115,9 +73,9 @@ export function SettingsPage() {
 
       {showQR && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-8 max-w-md w-full shadow-xl">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-sm w-full shadow-xl">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                 Share with Team
               </h2>
               <button
@@ -128,19 +86,19 @@ export function SettingsPage() {
               </button>
             </div>
 
-            <div className="text-center mb-6">
+            <div className="text-center mb-4">
               <img
                 src="/boston-trip-qr.png"
                 alt="Boston Trip App QR Code"
-                className="w-full max-w-xs mx-auto bg-white p-4 rounded-lg"
+                className="w-48 h-48 mx-auto bg-white p-2 rounded-lg"
               />
             </div>
 
-            <p className="text-gray-600 dark:text-gray-300 text-sm text-center mb-6">
+            <p className="text-gray-600 dark:text-gray-300 text-sm text-center mb-4">
               Scan this QR code to access the Boston Trip App
             </p>
 
-            <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg mb-6">
+            <div className="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg mb-4">
               <p className="text-xs font-mono text-gray-600 dark:text-gray-400 break-all">
                 https://boston-trip-4lvp9y2xa-tempranos-projects.vercel.app/
               </p>
