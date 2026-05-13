@@ -62,7 +62,7 @@ export function EventCard({ event, onMapClick, onTransitClick, onTicketsClick }:
               alt="Event logo"
               style={{
                 position: 'absolute',
-                top: '14px',
+                top: '8px',
                 right: '14px',
                 width: '96px',
                 height: '96px',

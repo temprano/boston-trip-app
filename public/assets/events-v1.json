@@ -95,7 +95,7 @@
       "line1": "4 Jersey Street",
       "line2": "BOSTON MA 02115"
     },
-    "eventImage": "/bkgrd/atl-bkgrd.png",
+    "eventImage": "/bkgrd/boston_braves.png",
     "category": "Tour",
     "stopId": "place-fenwy"
   },
@@ -140,7 +140,7 @@
       "line1": "60 Rowes Wharf",
       "line2": "BOSTON, MA 02110"
     },
-    "eventImage": "/bkgrd/boston_braves.png",
+    "eventImage": "/bkgrd/harbor.png",
     "category": "Tour",
     "stopId": "place-sstat"
   }
