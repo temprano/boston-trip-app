@@ -9,7 +9,7 @@ export function SettingsPage() {
   const setIsOffline = useAppStore((state) => state.setIsOffline)
 
   return (
-    <div className="space-y-6 pb-24" style={{ color: '#ffffff', padding: '24px 32px' }}>
+    <div className="space-y-10 pb-24" style={{ color: '#ffffff', padding: '24px 32px' }}>
       <div>
         <h1 className="text-3xl font-bold mb-2" style={{ color: '#ffffff' }}>
           Settings
@@ -20,7 +20,7 @@ export function SettingsPage() {
       </div>
 
       <div className="bg-gray-800 dark:bg-gray-900 rounded-lg p-6 shadow">
-        <h2 className="text-lg font-semibold mb-4" style={{ color: '#ffffff' }}>
+        <h2 className="text-lg font-semibold mb-4 pb-3" style={{ color: '#ffffff', borderBottom: '2px solid #ffffff' }}>
           Connectivity
         </h2>
 
@@ -50,7 +50,7 @@ export function SettingsPage() {
       </div>
 
       <div className="bg-gray-800 dark:bg-gray-900 rounded-lg p-6 shadow">
-        <h2 className="text-lg font-semibold mb-4" style={{ color: '#ffffff' }}>
+        <h2 className="text-lg font-semibold mb-4 pb-3" style={{ color: '#ffffff', borderBottom: '2px solid #ffffff' }}>
           Share with Team
         </h2>
 
@@ -74,7 +74,7 @@ export function SettingsPage() {
       {showQR && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-gray-800 dark:bg-gray-900 rounded-lg p-4 max-w-xs w-full shadow-xl">
-            <div className="flex justify-between items-center mb-3">
+            <div className="flex justify-between items-center mb-3 pb-2" style={{ borderBottom: '2px solid #ffffff' }}>
               <h2 className="text-lg font-bold" style={{ color: '#ffffff' }}>
                 Share with Team
               </h2>
@@ -116,7 +116,7 @@ export function SettingsPage() {
       )}
 
       <div className="bg-gray-800 dark:bg-gray-900 rounded-lg p-6 shadow">
-        <h2 className="text-lg font-semibold mb-4" style={{ color: '#ffffff' }}>
+        <h2 className="text-lg font-semibold mb-4 pb-3" style={{ color: '#ffffff', borderBottom: '2px solid #ffffff' }}>
           Weather
         </h2>
         <WeatherWidget title="Boston Current Weather" />
