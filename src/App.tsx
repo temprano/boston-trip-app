@@ -4,7 +4,6 @@ import { useAppStore } from './store'
 import { mockDataService } from './services/mockDataService'
 import { localTravelersDataService } from './services/localTravelersDataService'
 import { eventDataService } from './services/eventDataService'
-import { dataSyncService } from './services/dataSyncService'
 import { Traveler, Event } from './types'
 import './App.css'
 
