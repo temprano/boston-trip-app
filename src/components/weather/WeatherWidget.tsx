@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Cloud, Droplets, Wind, Eye, Gauge } from 'lucide-react'
+import { Cloud, Droplets, Wind, Gauge } from 'lucide-react'
 import { GlassCard } from '../glass'
 import { weatherService } from '../../services/weatherService'
 

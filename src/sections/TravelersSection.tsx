@@ -105,25 +105,21 @@ const TravelerCard: React.FC<TravelerCardProps> = ({ traveler, isExpanded, onTog
                   </div>
                   <div className="text-xs space-y-1 text-gray-700 dark:text-gray-300">
                     <div>
-                      <span className="font-medium">{traveler.flightInfo.airline}</span>
-                      <span className="ml-2">{traveler.flightInfo.flightNumber}</span>
+                      <span className="font-medium">Departure:</span>
+                      <span className="ml-2">{traveler.flightInfo.departureAirline} {traveler.flightInfo.departureFlightNumber}</span>
                     </div>
                     <div>
-                      {traveler.flightInfo.departure.airport} → {traveler.flightInfo.arrival.airport}
+                      <span className="font-medium">Departs:</span>
+                      <span className="ml-2">{traveler.flightInfo.departureTime}</span>
                     </div>
                     <div>
-                      Departure: {traveler.flightInfo.departure.time} on{' '}
-                      {traveler.flightInfo.departure.date}
+                      <span className="font-medium">Arrival:</span>
+                      <span className="ml-2">{traveler.flightInfo.arrivalAirline} {traveler.flightInfo.arrivalFlightNumber}</span>
                     </div>
                     <div>
-                      Arrival: {traveler.flightInfo.arrival.time} on {traveler.flightInfo.arrival.date}
+                      <span className="font-medium">Arrives:</span>
+                      <span className="ml-2">{traveler.flightInfo.arrivalTime}</span>
                     </div>
-                    {traveler.flightInfo.seatNumber && (
-                      <div>Seat: {traveler.flightInfo.seatNumber}</div>
-                    )}
-                    {traveler.flightInfo.confirmationNumber && (
-                      <div>Confirmation: {traveler.flightInfo.confirmationNumber}</div>
-                    )}
                   </div>
                 </div>
               )}

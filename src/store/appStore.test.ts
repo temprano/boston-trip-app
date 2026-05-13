@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
 import { useAppStore, useItinerary, useTravelers, useIsOffline, useTheme } from './appStore'
 import { mockItinerary, mockTravelers } from '../data/mockData'

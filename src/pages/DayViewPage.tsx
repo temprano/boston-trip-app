@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { Event } from '../types'
-import { EventCard } from '../components/EventCard'
 import { DayEventsGroup } from '../components/DayEventsGroup'
 import { EventInfoPanel } from '../components/EventInfoPanel'
 import { eventDataService } from '../services/eventDataService'
@@ -132,9 +131,6 @@ export function DayViewPage() {
           event={selectedEvent}
           infoType={infoType}
           onClose={closeInfoPanel}
-          onMapClick={() => handleMapClick(selectedEvent)}
-          onTransitClick={() => handleTransitClick(selectedEvent)}
-          onTicketsClick={() => handleTicketsClick(selectedEvent)}
         />
       )}
     </div>

@@ -19,22 +19,14 @@ export const GlassCard: React.FC<GlassCardProps> = ({
   children,
   className = '',
   onClick,
-  displacementScale = 50,
-  blurAmount = 0.08,
-  saturation = 130,
-  elasticity = 0.2,
-  cornerRadius = 16,
-  padding = '16px',
-  mode = 'standard',
   style,
-  overLight = false,
 }) => {
   return (
     <div
       className={`glass-card bg-white dark:bg-gray-800 rounded-2xl shadow-md hover:shadow-lg transition-shadow ${className}`}
       onClick={onClick}
       style={{
-        padding: padding || '16px',
+        padding: '16px',
         ...style,
       }}
     >

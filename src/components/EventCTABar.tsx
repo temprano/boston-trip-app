@@ -1,5 +1,3 @@
-import React from 'react'
-
 interface EventCTABarProps {
   onMapClick?: () => void
   onTransitClick?: () => void

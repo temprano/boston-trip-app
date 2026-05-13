@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { MapPin, Navigation, Clock, Loader } from 'lucide-react'
+import { Navigation, Clock, Loader } from 'lucide-react'
 import { GlassCard } from '../glass'
 import { mapsService, Location, DirectionsResult } from '../../services/mapsService'
 

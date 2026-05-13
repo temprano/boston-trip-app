@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { TravelersSection } from './TravelersSection'
 import { mockTravelers } from '../data/mockData'
@@ -88,12 +88,9 @@ describe('TravelersSection', () => {
 
     // Click a card to toggle
     const firstCard = travelerCards[0] as HTMLElement
-    const initialExpanded = firstCard.textContent?.includes('Phone')
-
     fireEvent.click(firstCard)
 
     // The accordion state should change
-    const updatedExpanded = firstCard.textContent?.includes('Phone')
     // Note: This is a basic test - in a real scenario, you'd check specific expanded/collapsed states
     expect(travelerCards.length).toBeGreaterThan(0)
   })

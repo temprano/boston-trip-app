@@ -1,8 +1,8 @@
-import React, { useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Day } from '../types'
 import { ActivityItem } from './ActivityItem'
 import { GlassPanel } from '../components/glass'
-import { Calendar, MapPin, Zap } from 'lucide-react'
+import { MapPin, Zap } from 'lucide-react'
 
 interface DayViewProps {
   day: Day

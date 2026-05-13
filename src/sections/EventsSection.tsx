@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Event } from '../types'
-import { EventCard } from '../components/EventCard'
 import { DayEventsGroup } from '../components/DayEventsGroup'
 import { EventInfoPanel } from '../components/EventInfoPanel'
 import { eventDataService } from '../services/eventDataService'

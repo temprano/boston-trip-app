@@ -5,14 +5,12 @@ import { WeatherBug } from '../components/WeatherBug'
 import { eventDataService } from '../services/eventDataService'
 
 export function ItineraryPage() {
-  const [events, setEvents] = useState<Event[]>([])
   const [currentDayEvents, setCurrentDayEvents] = useState<Event[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     // Load events from local storage
     const loadedEvents = eventDataService.getEvents()
-    setEvents(loadedEvents)
 
     // Get today's date in MM/DD/YYYY format
     const today = new Date()
@@ -60,7 +58,7 @@ export function ItineraryPage() {
       {currentDayEvents.length > 0 && (
         <>
           {/* Weather header for the day */}
-          <WeatherBug eventDate={currentDayEvents[0].date} />
+          <WeatherBug date={currentDayEvents[0].date} />
 
           {/* Events for the day */}
           <div

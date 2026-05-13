@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { GoogleMap, Marker, InfoWindow } from '@react-google-maps/api'
 import { Event, GooglePlace, MapFilters, MapMarkerColors } from '../types'
 import { googlePlacesService } from '../services/googlePlacesService'

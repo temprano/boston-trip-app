@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Activity } from '../types'
 import { GlassCard } from '../components/glass'
-import { MapPin, Clock, Tag, ChevronDown, Map } from 'lucide-react'
+import { MapPin, Clock, ChevronDown, Map } from 'lucide-react'
 
 interface ActivityItemProps {
   activity: Activity

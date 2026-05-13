@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { mapsService, Location } from './mapsService'
 
 describe('Maps Service', () => {

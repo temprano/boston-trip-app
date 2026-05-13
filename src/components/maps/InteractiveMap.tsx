@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Map, Navigation, Activity } from 'lucide-react'
+import { Map } from 'lucide-react'
 import { GlassCard } from '../glass'
 import { Location, Activity as ActivityType } from '../../types'
 

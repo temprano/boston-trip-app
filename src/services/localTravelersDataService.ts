@@ -1,4 +1,4 @@
-import { Traveler, FlightInfo, Contact } from '../types'
+import { Traveler } from '../types'
 
 const TRAVELERS_STORAGE_KEY = 'boston_travelers_local'
 

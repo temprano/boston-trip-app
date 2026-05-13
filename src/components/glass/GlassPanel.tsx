@@ -19,14 +19,6 @@ export const GlassPanel: React.FC<GlassPanelProps> = ({
   children,
   className = '',
   title,
-  mouseTracking = false,
-  displacementScale = 30,
-  blurAmount = 0.02,
-  saturation = 110,
-  elasticity = 0.1,
-  cornerRadius = 24,
-  padding = '24px',
-  mode = 'standard',
   style,
 }) => {
   const panelRef = useRef<HTMLDivElement>(null)

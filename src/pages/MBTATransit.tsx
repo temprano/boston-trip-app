@@ -109,22 +109,6 @@ interface IncludedTrip {
 const API_BASE = 'https://api-v3.mbta.com'
 const API_KEY = import.meta.env?.VITE_API_V3_KEY || ''
 
-const ROUTE_TYPE_LABELS: Record<number, string> = {
-  0: 'Light Rail',
-  1: 'Subway',
-  2: 'Commuter Rail',
-  3: 'Bus',
-  4: 'Ferry',
-}
-
-const ROUTE_TYPE_ICONS: Record<number, string> = {
-  0: '🚊',
-  1: '🚇',
-  2: '🚆',
-  3: '🚌',
-  4: '⛴️',
-}
-
 const QUICK_STOPS: Array<{ id: string; name: string; hint: string }> = [
   { id: 'place-DB-2249', name: 'Four Corners/Geneva', hint: 'Airbnb · Fairmount CR' },
   { id: 'place-pktrm',   name: 'Park Street',         hint: 'Freedom Trail · Red / Green' },
@@ -399,9 +383,9 @@ export function MBTATransit({ defaultStopId }: MBTATransitProps) {
         if (!result.notModified) {
           predLastMod.current = result.lastModified
           setPredictions(result.data?.data || [])
-          setIncludedStops((result.data?.included?.filter(i => i.type === 'stop') as IncludedStop[]) || [])
-          setIncludedTrips((result.data?.included?.filter(i => i.type === 'trip') as IncludedTrip[]) || [])
-          setRoutes((result.data?.included?.filter(i => i.type === 'route') as Route[]) || [])
+          setIncludedStops((result.data?.included?.filter((i: any) => i.type === 'stop') as IncludedStop[]) || [])
+          setIncludedTrips((result.data?.included?.filter((i: any) => i.type === 'trip') as IncludedTrip[]) || [])
+          setRoutes((result.data?.included?.filter((i: any) => i.type === 'route') as Route[]) || [])
           setLastUpdated(new Date())
         }
       } catch (err: any) {
@@ -588,14 +572,13 @@ export function MBTATransit({ defaultStopId }: MBTATransitProps) {
   function getTrip(id: string): IncludedTrip | undefined {
     return includedTrips.find(t => t.id === id)
   }
-  function getStop(id: string): IncludedStop | undefined {
-    return includedStops.find(s => s.id === id)
-  }
+
   function getRoute(id: string): Route | undefined {
     return routes.find(r => r.id === id)
   }
-  function getVehicle(id: string): Vehicle | undefined {
-    return vehicles.find(v => v.id === id)
+
+  function getStop(id: string): IncludedStop | undefined {
+    return includedStops.find(s => s.id === id)
   }
 
   // ─── Render ───────────────────────────────────────────────────────────────

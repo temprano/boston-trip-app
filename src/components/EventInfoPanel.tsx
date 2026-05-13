@@ -1,4 +1,3 @@
-import React from 'react'
 import { Event } from '../types'
 import { X } from 'lucide-react'
 import { GoogleMapComponent } from './GoogleMapComponent'

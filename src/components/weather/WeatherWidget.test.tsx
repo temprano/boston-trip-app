@@ -43,7 +43,7 @@ describe('WeatherWidget', () => {
   })
 
   it('should render compact version when compact prop is true', async () => {
-    const { container } = render(<WeatherWidget compact={true} />)
+    render(<WeatherWidget compact={true} />)
 
     await waitFor(() => {
       expect(screen.queryByText('Loading weather...')).not.toBeInTheDocument()

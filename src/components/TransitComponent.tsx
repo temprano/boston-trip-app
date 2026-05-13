@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Event } from '../types'
 import { transitService } from '../services/transitService'
 
@@ -39,9 +39,6 @@ export function TransitComponent({ event }: TransitComponentProps) {
       try {
         setIsLoading(true)
         setError(null)
-
-        // Geocode the event address to get coordinates
-        const fullAddress = `${event.address.line1}, ${event.address.line2}`
 
         // For now, use fallback data (in production, would geocode the address)
         const transitRoute = await transitService.getTransitDirections(42.3554, -71.0555, event.time)
