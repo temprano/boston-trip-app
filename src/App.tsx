@@ -44,14 +44,19 @@ function App() {
 
         // ── Sync with GitHub (pull latest master data if available) ──
         // This runs silently in background - doesn't block app load
-        dataSyncService.syncAll().then(result => {
-          if (result.events.synced) {
-            console.log('Events synced from GitHub')
-          }
-          if (result.travelers.synced) {
-            console.log('Travelers synced from GitHub')
-          }
-        })
+        // Disabled in development due to CORS restrictions on localhost
+        if (!import.meta.env.DEV) {
+          dataSyncService.syncAll().then(result => {
+            if (result.events.synced) {
+              console.log('Events synced from GitHub')
+            }
+            if (result.travelers.synced) {
+              console.log('Travelers synced from GitHub')
+            }
+          }).catch(err => {
+            console.warn('Background sync failed:', err)
+          })
+        }
       } catch (error) {
         console.error('Failed to load initial data:', error)
         // Fallback: try to load from localStorage if file load fails

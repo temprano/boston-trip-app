@@ -9,27 +9,27 @@ export function SettingsPage() {
   const setIsOffline = useAppStore((state) => state.setIsOffline)
 
   return (
-    <div className="space-y-6 px-4 pb-20">
+    <div className="space-y-6 pb-24" style={{ color: '#ffffff', padding: '24px 32px' }}>
       <div>
-        <h1 className="text-3xl font-bold text-white mb-2">
+        <h1 className="text-3xl font-bold mb-2" style={{ color: '#ffffff' }}>
           Settings
         </h1>
-        <p className="text-white">
+        <p className="font-medium" style={{ color: '#ffffff' }}>
           Configure app preferences and behavior
         </p>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+      <div className="bg-gray-800 dark:bg-gray-900 rounded-lg p-6 shadow">
+        <h2 className="text-lg font-semibold mb-4" style={{ color: '#ffffff' }}>
           Connectivity
         </h2>
 
         <div className="flex items-center justify-between">
           <div>
-            <span className="text-white">
+            <span className="font-medium" style={{ color: '#ffffff' }}>
               Offline Mode
             </span>
-            <p className="text-sm text-white mt-1">
+            <p className="text-sm mt-1" style={{ color: '#ffffff' }}>
               {isOffline
                 ? 'Currently offline - using cached data'
                 : 'Currently online - syncing with server'}
@@ -49,16 +49,16 @@ export function SettingsPage() {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+      <div className="bg-gray-800 dark:bg-gray-900 rounded-lg p-6 shadow">
+        <h2 className="text-lg font-semibold mb-4" style={{ color: '#ffffff' }}>
           Share with Team
         </h2>
 
         <div className="flex items-center gap-4">
           <QrCode className="w-6 h-6 text-blue-500" />
           <div className="flex-1">
-            <p className="text-white font-medium">Share QR Code</p>
-            <p className="text-sm text-white mt-1">
+            <p className="font-medium" style={{ color: '#ffffff' }}>Share QR Code</p>
+            <p className="text-sm mt-1" style={{ color: '#ffffff' }}>
               Display the QR code so team members can scan and join
             </p>
           </div>
@@ -73,40 +73,41 @@ export function SettingsPage() {
 
       {showQR && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-sm w-full shadow-xl">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+          <div className="bg-gray-800 dark:bg-gray-900 rounded-lg p-4 max-w-xs w-full shadow-xl">
+            <div className="flex justify-between items-center mb-3">
+              <h2 className="text-lg font-bold" style={{ color: '#ffffff' }}>
                 Share with Team
               </h2>
               <button
                 onClick={() => setShowQR(false)}
-                className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                style={{ color: '#ffffff' }}
+                className="hover:text-gray-300"
               >
-                <X className="w-6 h-6" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="text-center mb-4">
+            <div className="text-center mb-3">
               <img
                 src="/boston-trip-qr.png"
                 alt="Boston Trip App QR Code"
-                className="w-48 h-48 mx-auto bg-white p-2 rounded-lg"
+                style={{ width: '200px', height: '200px', margin: '0 auto', backgroundColor: '#ffffff', padding: '4px', borderRadius: '8px' }}
               />
             </div>
 
-            <p className="text-gray-600 dark:text-gray-300 text-sm text-center mb-4">
+            <p className="text-xs text-center mb-3 font-medium" style={{ color: '#ffffff' }}>
               Scan this QR code to access the Boston Trip App
             </p>
 
-            <div className="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg mb-4">
-              <p className="text-xs font-mono text-gray-600 dark:text-gray-400 break-all">
+            <div className="bg-gray-700 dark:bg-gray-600 p-2 rounded mb-3">
+              <p className="text-xs font-mono text-gray-200 break-all">
                 https://boston-trip-4lvp9y2xa-tempranos-projects.vercel.app/
               </p>
             </div>
 
             <button
               onClick={() => setShowQR(false)}
-              className="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+              className="w-full px-3 py-2 bg-blue-500 text-white rounded text-sm hover:bg-blue-600 transition"
             >
               Close
             </button>
@@ -114,8 +115,8 @@ export function SettingsPage() {
         </div>
       )}
 
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+      <div className="bg-gray-800 dark:bg-gray-900 rounded-lg p-6 shadow">
+        <h2 className="text-lg font-semibold mb-4" style={{ color: '#ffffff' }}>
           Weather
         </h2>
         <WeatherWidget title="Boston Current Weather" />
