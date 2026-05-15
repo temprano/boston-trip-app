@@ -1,0 +1,162 @@
+[
+  {
+    "id": "traveler_1",
+    "name": "Jeff",
+    "avatar": "/img/Jeff_thumbnail.png",
+    "contact": {
+      "phone": "402-910-5996"
+    },
+    "flightInfo": {
+      "arrivalAirline": "Delta",
+      "arrivalFlightNumber": "DL123",
+      "arrivalTime": "2:30 PM",
+      "departureAirline": "Delta",
+      "departureFlightNumber": "DL456",
+      "departureTime": "5:00 PM"
+    }
+  },
+  {
+    "id": "traveler_2",
+    "name": "Deb",
+    "avatar": "/img/Deb_thumbnail.png",
+    "contact": {
+      "phone": "402-910-8202"
+    },
+    "flightInfo": {
+      "arrivalAirline": "United",
+      "arrivalFlightNumber": "UA789",
+      "arrivalTime": "3:00 PM",
+      "departureAirline": "United",
+      "departureFlightNumber": "UA012",
+      "departureTime": "5:30 PM"
+    }
+  },
+  {
+    "id": "traveler_3",
+    "name": "Darrin",
+    "avatar": "/img/Darrin_thumbnail.png",
+    "contact": {
+      "phone": "617-555-0003"
+    },
+    "flightInfo": {
+      "arrivalAirline": "American",
+      "arrivalFlightNumber": "AA345",
+      "arrivalTime": "2:00 PM",
+      "departureAirline": "American",
+      "departureFlightNumber": "AA678",
+      "departureTime": "6:00 PM"
+    }
+  },
+  {
+    "id": "traveler_4",
+    "name": "Allie",
+    "avatar": "/img/Allie_thumbnail.png",
+    "contact": {
+      "phone": "617-555-0003"
+    },
+    "flightInfo": {
+      "arrivalAirline": "American",
+      "arrivalFlightNumber": "AA345",
+      "arrivalTime": "2:00 PM",
+      "departureAirline": "American",
+      "departureFlightNumber": "AA678",
+      "departureTime": "6:00 PM"
+    }
+  },
+  {
+    "id": "traveler_5",
+    "name": "Austin",
+    "avatar": "/img/Austin_thumbnail.png",
+    "contact": {
+      "phone": "402-942-4687"
+    },
+    "flightInfo": {
+      "arrivalAirline": "American",
+      "arrivalFlightNumber": "AA345",
+      "arrivalTime": "2:00 PM",
+      "departureAirline": "American",
+      "departureFlightNumber": "AA678",
+      "departureTime": "6:00 PM"
+    }
+  },
+  {
+    "id": "traveler_6",
+    "name": "Lauren",
+    "avatar": "/img/Lauren_thumbnail.png",
+    "contact": {
+      "phone": "617-555-0003"
+    },
+    "flightInfo": {
+      "arrivalAirline": "American",
+      "arrivalFlightNumber": "AA345",
+      "arrivalTime": "2:00 PM",
+      "departureAirline": "American",
+      "departureFlightNumber": "AA678",
+      "departureTime": "6:00 PM"
+    }
+  },
+  {
+    "id": "traveler_7",
+    "name": "Joe",
+    "avatar": "/img/Joe_thumbnail.png",
+    "contact": {
+      "phone": "602-363-9036"
+    },
+    "flightInfo": {
+      "arrivalAirline": "Jet Blue",
+      "arrivalFlightNumber": "AA345",
+      "arrivalTime": "2:00 PM",
+      "departureAirline": "United",
+      "departureFlightNumber": "AA678",
+      "departureTime": "6:00 PM"
+    }
+  },
+  {
+    "id": "traveler_8",
+    "name": "Dierdre",
+    "avatar": "/img/Dierdre_thumbnail.png",
+    "contact": {
+      "phone": "602-363-9036"
+    },
+    "flightInfo": {
+      "arrivalAirline": "Jet Blue",
+      "arrivalFlightNumber": "AA345",
+      "arrivalTime": "2:00 PM",
+      "departureAirline": "United",
+      "departureFlightNumber": "AA678",
+      "departureTime": "6:00 PM"
+    }
+  },
+  {
+    "id": "traveler_9",
+    "name": "Kyle",
+    "avatar": "/img/Kyle_thumbnail.png",
+    "contact": {
+      "phone": "617-555-0003"
+    },
+    "flightInfo": {
+      "arrivalAirline": "American",
+      "arrivalFlightNumber": "AA345",
+      "arrivalTime": "2:00 PM",
+      "departureAirline": "American",
+      "departureFlightNumber": "AA678",
+      "departureTime": "6:00 PM"
+    }
+  },
+  {
+    "id": "traveler_10",
+    "name": "Kaelyn",
+    "avatar": "/img/Kaelyn_thumbnail.png",
+    "contact": {
+      "phone": "617-555-0003"
+    },
+    "flightInfo": {
+      "arrivalAirline": "American",
+      "arrivalFlightNumber": "AA345",
+      "arrivalTime": "2:00 PM",
+      "departureAirline": "American",
+      "departureFlightNumber": "AA678",
+      "departureTime": "6:00 PM"
+    }
+  }
+]

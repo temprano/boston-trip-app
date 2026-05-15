@@ -1,0 +1,40 @@
+{
+  "id": "itinerary_boston_2026",
+  "title": "Boston Trip 2026",
+  "startDate": "2026-05-26",
+  "endDate": "2026-05-30",
+  "baseAddress": "1 Beacon Street, Boston, MA 02108",
+  "days": [
+    {
+      "id": "day-may-26",
+      "date": "2026-05-26",
+      "dayOfWeek": "Tuesday",
+      "activities": [],
+      "notes": "Tea Party Tour"
+    },
+    {
+      "id": "day-may-27",
+      "date": "2026-05-27",
+      "dayOfWeek": "Wednesday",
+      "activities": [],
+      "notes": "Cheers, Paul Revere, Baseball, Freedom Trail"
+    },
+    {
+      "id": "day-may-28",
+      "date": "2026-05-28",
+      "dayOfWeek": "Thursday",
+      "activities": [],
+      "notes": "Duck Boat, Baseball, Cape Cod"
+    },
+    {
+      "id": "day-may-30",
+      "date": "2026-05-30",
+      "dayOfWeek": "Saturday",
+      "activities": [],
+      "notes": "Sam Adams Brewery, Harbor Cruise"
+    }
+  ],
+  "createdAt": "2026-05-15T00:00:00Z",
+  "updatedAt": "2026-05-15T00:00:00Z"
+}
+

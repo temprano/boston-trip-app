@@ -106,15 +106,15 @@ const mockActivities: Activity[] = [
 const mockDays: Day[] = [
   {
     id: 'day-1',
-    date: '2026-06-15',
-    dayOfWeek: 'Monday',
+    date: '05/14/2026',
+    dayOfWeek: 'Wednesday',
     activities: mockActivities.slice(0, 3),
     notes: 'First day - explore downtown and Freedom Trail',
   },
   {
     id: 'day-2',
-    date: '2026-06-16',
-    dayOfWeek: 'Tuesday',
+    date: '05/15/2026',
+    dayOfWeek: 'Thursday',
     activities: mockActivities.slice(3, 6),
     notes: 'Second day - North End and shopping',
   },
@@ -180,9 +180,9 @@ export const mockItinerary: Itinerary = {
   id: 'itin-1',
   title: 'Boston Adventure 2026',
   description: 'A 2-day exploration of historic Boston with friends',
-  startDate: '2026-06-15',
-  endDate: '2026-06-16',
+  startDate: '05/14/2026',
+  endDate: '05/15/2026',
   days: mockDays,
-  createdAt: new Date('2026-05-01'),
-  updatedAt: new Date('2026-05-06'),
+  createdAt: new Date('2026-05-10'),
+  updatedAt: new Date('2026-05-14'),
 }

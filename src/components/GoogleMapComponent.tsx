@@ -64,9 +64,12 @@ export function GoogleMapComponent({ event }: GoogleMapComponentProps) {
             800 // 800m walking distance
           )
 
-          // Flatten results from all types
+          // Flatten results from all types and deduplicate by place ID
           const allPlaces = Object.values(placesByType).flat()
-          setPlaces(allPlaces)
+          const uniquePlaces = Array.from(
+            new Map(allPlaces.map((place) => [place.id, place])).values()
+          )
+          setPlaces(uniquePlaces)
         } else {
           setPlaces([])
         }

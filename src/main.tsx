@@ -3,28 +3,58 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 
-// Initialize MSW BEFORE rendering React
-async function init() {
-  if (import.meta.env.DEV) {
-    try {
-      const { worker } = await import('./mocks/browser')
-      // Use 'bypass' to allow Google Maps internal RPC calls through
-      // MSW will intercept our mocked APIs (Geocoding, Places) 
-      // and let unhandled requests (like Google Maps RPC) through to the real API
-      await worker.start({
-        onUnhandledRequest: 'bypass',
-      })
-    } catch (err) {
-      console.error('MSW startup error:', err)
-    }
-  }
-
-  // Now render the app
-  createRoot(document.getElementById('root')!).render(
-    <StrictMode>
-      <App />
-    </StrictMode>,
-  )
+// Register service worker for PWA
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js', { scope: '/' }).then(
+      (registration) => {
+        console.log('✓ Service Worker registered:', registration)
+      },
+      (error) => {
+        console.log('✗ Service Worker registration failed:', error)
+      }
+    )
+  })
 }
 
-init()
+// Handle install prompt
+declare global {
+  interface WindowEventMap {
+    beforeinstallprompt: BeforeInstallPromptEvent
+  }
+}
+
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>
+}
+
+let deferredPrompt: BeforeInstallPromptEvent | null = null
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault()
+  deferredPrompt = e as BeforeInstallPromptEvent
+  // Make install button visible if needed
+  const installBtn = document.getElementById('install-app-btn')
+  if (installBtn) {
+    installBtn.style.display = 'block'
+  }
+})
+
+window.addEventListener('appinstalled', () => {
+  console.log('✓ PWA was installed')
+  deferredPrompt = null
+  const installBtn = document.getElementById('install-app-btn')
+  if (installBtn) {
+    installBtn.style.display = 'none'
+  }
+})
+
+// Make deferredPrompt globally available
+;(window as any).deferredPrompt = deferredPrompt
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)

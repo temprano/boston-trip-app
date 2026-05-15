@@ -23,20 +23,25 @@ export const locationService = {
   async getCurrentPosition(): Promise<UserLocation> {
     return new Promise((resolve, reject) => {
       if (!this.isSupported()) {
+        console.error('[locationService] Geolocation not supported')
         reject(new Error('Geolocation not supported'))
         return
       }
 
+      console.log('[locationService] Requesting current position...')
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          resolve({
+          const location = {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
             accuracy: position.coords.accuracy,
             timestamp: position.timestamp,
-          })
+          }
+          console.log('[locationService] ✓ Got location:', location)
+          resolve(location)
         },
         (error) => {
+          console.error('[locationService] ✗ Geolocation error:', error.code, error.message)
           reject(new Error(`Geolocation error: ${error.message}`))
         },
         {

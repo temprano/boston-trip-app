@@ -2,6 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Ensure proper box-sizing and responsive behavior */
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
 /* Embed Blackhawk Italic font */
 @font-face {
   font-family: 'Blackhawk Italic';

@@ -23,6 +23,7 @@ export interface PlaceDetails {
 }
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 'demo-key'
+const FIREBASE_PLACES_URL = 'https://us-central1-boston-travel-app-2dcff.cloudfunctions.net/getNearbyPlaces'
 
 let mapsLoaded = false
 let loader: Loader | null = null
@@ -55,23 +56,32 @@ export const mapsService = {
     origin: Location,
     destination: Location
   ): Promise<DirectionsResult> {
-    const url = 'https://maps.googleapis.com/maps/api/directions/json'
-    const params = new URLSearchParams({
+    // Call the Cloud Function proxy instead of Google API directly
+    // This keeps the API key server-side and handles CORS
+    const cloudFunctionUrl = 'https://us-central1-boston-travel-app-2dcff.cloudfunctions.net/getDirections'
+    
+    const body = {
       origin: `${origin.lat},${origin.lng}`,
       destination: `${destination.lat},${destination.lng}`,
-      key: API_KEY,
       mode: 'walking',
+    }
+
+    const response = await fetch(cloudFunctionUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
     })
 
-    const response = await fetch(`${url}?${params}`)
     if (!response.ok) {
       throw new Error(`Directions API error: ${response.statusText}`)
     }
 
     const data = await response.json()
 
-    if (data.routes.length === 0) {
-      throw new Error('No route found')
+    if (data.status !== 'OK' || data.routes.length === 0) {
+      throw new Error(data.error || 'No route found')
     }
 
     const route = data.routes[0]
@@ -89,30 +99,43 @@ export const mapsService = {
     type: string,
     radius: number = 1000
   ): Promise<PlaceDetails[]> {
-    const url =
-      'https://maps.googleapis.com/maps/api/place/nearbysearch/json'
-    const params = new URLSearchParams({
-      location: `${location.lat},${location.lng}`,
-      radius: radius.toString(),
-      type,
-      key: API_KEY,
-    })
+    try {
+      const response = await fetch(FIREBASE_PLACES_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          lat: location.lat,
+          lng: location.lng,
+          type,
+          radius,
+        }),
+      })
 
-    const response = await fetch(`${url}?${params}`)
-    if (!response.ok) {
-      throw new Error(`Nearby Search API error: ${response.statusText}`)
+      if (!response.ok) {
+        throw new Error(`Nearby Search API error: ${response.statusText}`)
+      }
+
+      const data = await response.json()
+
+      if (!data.results) {
+        return []
+      }
+
+      // Transform Firebase function response to PlaceDetails format
+      return data.results.map((place: any) => ({
+        name: place.name,
+        address: place.address,
+        lat: place.lat,
+        lng: place.lng,
+        rating: place.rating,
+        types: [place.type],
+      }))
+    } catch (error) {
+      console.error('Error fetching nearby places:', error)
+      return []
     }
-
-    const data = await response.json()
-
-    return data.results.map((place: any) => ({
-      name: place.name,
-      address: place.vicinity,
-      lat: place.geometry.location.lat,
-      lng: place.geometry.location.lng,
-      rating: place.rating,
-      types: place.types,
-    }))
   },
 
   calculateDistance(

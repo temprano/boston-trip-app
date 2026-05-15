@@ -1,0 +1,137 @@
+[
+  {
+    "id": "1",
+    "title": "BOSTON TEA PARTY TOUR",
+    "venue": "Boston Tea Party Museum",
+    "date": "2026-05-26",
+    "time": "3:00 pm",
+    "phone": "(866) 753-7121",
+    "address": {
+      "line1": "306 Congress Street",
+      "line2": "BOSTON MA 02210"
+    },
+    "eventImage": "/assets/bkgrd/tea-party.png",
+    "category": "Museum"
+  },
+  {
+    "id": "2",
+    "title": "CHEERS",
+    "venue": "Downtown Boston",
+    "date": "2026-05-27",
+    "time": "11:00 am",
+    "phone": "(617) 227-9605",
+    "address": {
+      "line1": "84 Beacon St",
+      "line2": "BOSTON MA 02108"
+    },
+    "eventImage": "/assets/bkgrd/cheers.png",
+    "category": "Lunch"
+  },
+  {
+    "id": "3",
+    "title": "PAUL REVERE HOUSE",
+    "venue": "Freedom Trail",
+    "date": "2026-05-27",
+    "time": "1:00 pm",
+    "address": {
+      "line1": "19 N Square",
+      "line2": "BOSTON MA 02113"
+    },
+    "eventImage": "/assets/bkgrd/revere.png",
+    "category": "Museum"
+  },
+  {
+    "id": "4",
+    "title": "ATLANTA BRAVES BASEBALL",
+    "venue": "Fenway Park",
+    "date": "2026-05-27",
+    "time": "6:45 pm",
+    "address": {
+      "line1": "4 Jersey Street",
+      "line2": "BOSTON MA 02115"
+    },
+    "eventImage": "/assets/bkgrd/boston_braves.png",
+    "category": "Sports"
+  },
+  {
+    "id": "5",
+    "title": "BOSTON DUCK BOAT",
+    "venue": "465 Huntington Ave",
+    "date": "2026-05-28",
+    "time": "1:00 pm",
+    "address": {
+      "line1": "1 Science Park",
+      "line2": "BOSTON MA 02114"
+    },
+    "eventImage": "/assets/bkgrd/duck.png",
+    "category": "Tour"
+  },
+  {
+    "id": "6",
+    "title": "FREEDOM TRAIL",
+    "venue": "Boston Commons",
+    "date": "2026-05-27",
+    "time": "1:00 pm",
+    "address": {
+      "line1": "138 Tremont St",
+      "line2": "BOSTON MA 02111"
+    },
+    "eventImage": "/assets/bkgrd/freedom-trail.png",
+    "category": "Tour"
+  },
+  {
+    "id": "7",
+    "title": "ATLANTA BRAVES BASEBALL",
+    "venue": "Fenway Park",
+    "date": "2026-05-28",
+    "time": "4:00 pm",
+    "address": {
+      "line1": "4 Jersey Street",
+      "line2": "BOSTON MA 02115"
+    },
+    "eventImage": "/assets/bkgrd/boston_braves.png",
+    "category": "Tour"
+  },
+  {
+    "id": "8",
+    "title": "ROAD TRIP CAPE COD",
+    "venue": "Hyannis / P-Town",
+    "date": "2026-05-28",
+    "time": "10:30 am",
+    "phone": "508-771-0107",
+    "address": {
+      "line1": "180 Ocean St Slip #1",
+      "line2": "HYANNIS MA 02601"
+    },
+    "eventImage": "/assets/bkgrd/van.png",
+    "category": "Tour"
+  },
+  {
+    "id": "9",
+    "title": "SAM ADAMS BREWERY TOUR",
+    "venue": "Jamaica Plain Brewery",
+    "date": "2026-05-30",
+    "time": "11:00 am",
+    "phone": "",
+    "address": {
+      "line1": "29 Germania St Building M",
+      "line2": "JAMAICA PLAIN, MA 02130"
+    },
+    "eventImage": "/assets/bkgrd/sam_adams.png",
+    "category": "Tour"
+  },
+  {
+    "id": "10",
+    "title": "BOSTON HARBOR SUNSET CRUISE",
+    "venue": "Harbor Islands",
+    "date": "2026-05-30",
+    "time": "6:00 pm",
+    "phone": "",
+    "address": {
+      "line1": "60 Rowes Wharf",
+      "line2": "BOSTON, MA 02110"
+    },
+    "eventImage": "/assets/bkgrd/harbor.png",
+    "category": "Tour"
+  }
+]

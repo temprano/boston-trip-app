@@ -24,11 +24,17 @@ export function WeatherBug({ date }: WeatherBugProps) {
       try {
         setLoading(true)
 
-        // Parse date parameter (MM/DD/YYYY format)
+        // Parse date parameter - handle both YYYY-MM-DD and MM/DD/YYYY formats
         let eventDate = new Date()
         if (date) {
-          const [month, day, year] = date.split('/').map(Number)
-          eventDate = new Date(year, month - 1, day) // month is 0-indexed
+          if (date.includes('-')) {
+            // ISO format: YYYY-MM-DD
+            eventDate = new Date(date)
+          } else if (date.includes('/')) {
+            // MM/DD/YYYY format
+            const [month, day, year] = date.split('/').map(Number)
+            eventDate = new Date(year, month - 1, day)
+          }
         }
 
         const dayName = eventDate.toLocaleDateString('en-US', {

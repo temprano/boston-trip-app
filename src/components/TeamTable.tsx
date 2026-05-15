@@ -3,6 +3,7 @@ import { Traveler } from '../types'
 import { Edit2, Phone, Plane } from 'lucide-react'
 import { TravelerEditForm } from './TravelerEditForm'
 import { localTravelersDataService } from '../services/localTravelersDataService'
+import { useAppStore } from '../store/appStore'
 
 interface TeamTableProps {
   travelers: Traveler[]
@@ -11,6 +12,7 @@ interface TeamTableProps {
 export function TeamTable({ travelers }: TeamTableProps) {
   const [editingTraveler, setEditingTraveler] = useState<Traveler | null>(null)
   const [localTravelers, setLocalTravelers] = useState<Traveler[]>(travelers)
+  const setTravelersInStore = useAppStore((state) => state.setTravelers)
 
   // Initialize local datastore
   useEffect(() => {
@@ -28,7 +30,10 @@ export function TeamTable({ travelers }: TeamTableProps) {
 
     const updated = localTravelersDataService.updateTraveler(editingTraveler.id, updatedData)
     if (updated) {
-      setLocalTravelers(localTravelersDataService.getTravelers())
+      const allTravelers = localTravelersDataService.getTravelers()
+      setLocalTravelers(allTravelers)
+      // Sync back to Zustand store
+      setTravelersInStore(allTravelers)
       setEditingTraveler(null)
     }
   }

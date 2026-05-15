@@ -2,12 +2,48 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    
+    <!-- Theme & Colors -->
+    <meta name="theme-color" content="#1a1a2e" />
+    <meta name="color-scheme" content="light dark" />
+    
+    <!-- Favicon & Icons -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="apple-touch-icon" href="/pwa/icons/ios/180.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/pwa/icons/android/launchericon-192x192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/pwa/icons/android/launchericon-512x512.png" />
+    
+    <!-- iOS Web App Configuration -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="BostonTrip" />
+    <link rel="apple-touch-startup-image" href="/pwa/icons/ios/180.png" />
+    
+    <!-- Windows Configuration -->
+    <meta name="msapplication-TileColor" content="#1a1a2e" />
+    <meta name="msapplication-TileImage" content="/pwa/icons/windows/Square150x150Logo.scale-100.png" />
+    <meta name="msapplication-square310x310logo" content="/pwa/icons/windows/LargeTile.scale-100.png" />
+    <meta name="msapplication-wide310x150logo" content="/pwa/icons/windows/Wide310x150Logo.scale-100.png" />
+    <meta name="msapplication-square150x150logo" content="/pwa/icons/windows/Square150x150Logo.scale-100.png" />
+    <meta name="msapplication-square70x70logo" content="/pwa/icons/windows/Square44x44Logo.scale-100.png" />
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Boston Itinerary Planner" />
+    <meta property="og:description" content="Plan your Boston trip with real-time directions, team coordination, and offline support" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://bostontrip.app" />
+    
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Permanent+Marker&family=Barlow+Condensed:wght@400;600&display=swap" rel="stylesheet">
-
-    <title>boston</title>
+    
+    <!-- Google Maps API -->
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDD1boADglPCZKL_ZaSs0a2zCKHUV5H8dc&libraries=places"></script>
+    
+    <title>Boston Itinerary Planner</title>
   </head>
   <body>
     <div id="root"></div>

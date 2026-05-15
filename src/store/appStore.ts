@@ -1,16 +1,20 @@
 import { create } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
-import { Itinerary, Traveler, AppState, Location } from '../types'
+import { Itinerary, Traveler, Event, AppState, Location } from '../types'
+import { localTravelersDataService } from '../services/localTravelersDataService'
 
 export interface AppStore extends AppState {
   // Setters
   setItinerary: (itinerary: Itinerary | null) => void
   setTravelers: (travelers: Traveler[]) => void
+  setEvents: (events: Event[]) => void
   setIsOffline: (isOffline: boolean) => void
   setTheme: (theme: 'light' | 'dark') => void
   setUserLocation: (location: Location | null) => void
   setIsTrackingLocation: (isTracking: boolean) => void
   setOptimizedActivityOrder: (activityIds: string[]) => void
+  setBaseAddress: (address: string) => void
+  setDirectionsOrigin: (origin: 'current' | 'base') => void
 
   // Actions
   addTraveler: (traveler: Traveler) => void
@@ -22,11 +26,14 @@ export interface AppStore extends AppState {
 const initialState: AppState = {
   currentItinerary: null,
   travelers: [],
+  events: [],
   isOffline: false,
   theme: 'light',
   userLocation: null,
   isTrackingLocation: false,
   optimizedActivityOrder: [],
+  baseAddress: '',
+  directionsOrigin: 'base',
 }
 
 export const useAppStore = create<AppStore>()(
@@ -34,38 +41,82 @@ export const useAppStore = create<AppStore>()(
     ...initialState,
 
     // Setters
-    setItinerary: (itinerary) => set({ currentItinerary: itinerary }),
+    setItinerary: (itinerary) => {
+      // Auto-persist to localStorage whenever itinerary changes
+      if (itinerary) {
+        localStorage.setItem('currentItinerary', JSON.stringify(itinerary))
+      } else {
+        localStorage.removeItem('currentItinerary')
+      }
+      set({ currentItinerary: itinerary })
+    },
 
-    setTravelers: (travelers) => set({ travelers }),
+    setTravelers: (travelers) => {
+      // Auto-persist to localStorage whenever travelers change
+      localTravelersDataService.saveTravelers(travelers)
+      set({ travelers })
+    },
+
+    setEvents: (events) => {
+      // Auto-persist to localStorage whenever events change
+      localStorage.setItem('boston_events_local', JSON.stringify(events))
+      set({ events })
+    },
 
     setIsOffline: (isOffline) => set({ isOffline }),
 
     setTheme: (theme) => set({ theme }),
 
-    setUserLocation: (location) => set({ userLocation: location }),
+    setUserLocation: (location) => {
+      // Auto-persist to localStorage whenever location changes
+      if (location) {
+        localStorage.setItem('userLocation', JSON.stringify(location))
+      } else {
+        localStorage.removeItem('userLocation')
+      }
+      set({ userLocation: location })
+    },
 
     setIsTrackingLocation: (isTracking) => set({ isTrackingLocation: isTracking }),
 
     setOptimizedActivityOrder: (activityIds) =>
       set({ optimizedActivityOrder: activityIds }),
 
+    setBaseAddress: (address) => {
+      // Auto-persist to localStorage whenever baseAddress changes
+      localStorage.setItem('baseAddress', address)
+      set({ baseAddress: address })
+    },
+
+    setDirectionsOrigin: (origin) => {
+      // Auto-persist to localStorage
+      localStorage.setItem('directionsOrigin', origin)
+      set({ directionsOrigin: origin })
+    },
+
     // Actions
     addTraveler: (traveler) =>
-      set((state) => ({
-        travelers: [...state.travelers, traveler],
-      })),
+      set((state) => {
+        const updated = [...state.travelers, traveler]
+        localTravelersDataService.saveTravelers(updated)
+        return { travelers: updated }
+      }),
 
     removeTraveler: (travelerId) =>
-      set((state) => ({
-        travelers: state.travelers.filter((t) => t.id !== travelerId),
-      })),
+      set((state) => {
+        const updated = state.travelers.filter((t) => t.id !== travelerId)
+        localTravelersDataService.saveTravelers(updated)
+        return { travelers: updated }
+      }),
 
     updateTraveler: (travelerId, updates) =>
-      set((state) => ({
-        travelers: state.travelers.map((t) =>
+      set((state) => {
+        const updated = state.travelers.map((t) =>
           t.id === travelerId ? { ...t, ...updates } : t
-        ),
-      })),
+        )
+        localTravelersDataService.saveTravelers(updated)
+        return { travelers: updated }
+      }),
 
     resetState: () => set(initialState),
   }))

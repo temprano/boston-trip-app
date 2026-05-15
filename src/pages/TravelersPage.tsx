@@ -17,11 +17,8 @@ export function TravelersPage() {
       ) : (
         <div style={{ textAlign: 'center', padding: '32px 16px' }}>
           <p style={{ color: '#666666', marginBottom: '16px' }}>
-            No travelers added yet
+            No travelers yet
           </p>
-          <button style={{ padding: '8px 16px', backgroundColor: '#2255cc', color: '#ffffff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-            Add Traveler
-          </button>
         </div>
       )}
     </div>

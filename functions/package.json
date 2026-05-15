@@ -1,0 +1,11 @@
+{
+  "name": "boston-trip-app-functions",
+  "version": "1.0.0",
+  "description": "Firebase Cloud Functions for Boston Trip App",
+  "main": "index.js",
+  "dependencies": {
+    "firebase-functions": "^5.1.1",
+    "axios": "^1.7.7"
+  },
+  "devDependencies": {}
+}

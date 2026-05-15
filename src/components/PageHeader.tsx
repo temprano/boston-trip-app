@@ -9,10 +9,16 @@ export function PageHeader({ title, subtitle = 'Itinerary Planner' }: PageHeader
       className="page-header"
       style={{
         background: '#000000',
-        padding: '24px 0px 24px',
+        padding: '24px 16px',
         width: '100%',
+        boxSizing: 'border-box',
         textAlign: 'center',
-        position:'fixed'
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 40,
+        overflowX: 'hidden',
       }}
     >
       <div 

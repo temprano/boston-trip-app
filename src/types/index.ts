@@ -31,6 +31,7 @@ export interface Itinerary {
   startDate: string
   endDate: string
   days: Day[]
+  baseAddress?: string
   createdAt: Date
   updatedAt: Date
 }
@@ -124,9 +125,86 @@ export interface MapMarkerColors {
 export interface AppState {
   currentItinerary: Itinerary | null
   travelers: Traveler[]
+  events: Event[]
   isOffline: boolean
   theme: 'light' | 'dark'
   userLocation: Location | null
   isTrackingLocation: boolean
   optimizedActivityOrder: string[]
+  baseAddress?: string
+  directionsOrigin: 'current' | 'base'
+}
+
+// Directions API types
+export interface Duration {
+  value: number // seconds
+  text: string
+}
+
+export interface Distance {
+  value: number // meters
+  text: string
+}
+
+export interface DirectionStep {
+  instruction: string
+  distance: Distance
+  duration: Duration
+  startLocation: { lat: number; lng: number }
+  endLocation: { lat: number; lng: number }
+  html_instructions?: string
+  transit_details?: {
+    line: {
+      name: string
+      short_name?: string
+      vehicle: {
+        type: string
+      }
+      agencies?: Array<{
+        name: string
+      }>
+    }
+    arrival_time?: {
+      text: string
+      value: number
+    }
+    departure_time?: {
+      text: string
+      value: number
+    }
+    arrival_stop?: {
+      name: string
+    }
+    departure_stop?: {
+      name: string
+    }
+    num_stops?: number
+  }
+}
+
+export interface TransitLeg {
+  steps: DirectionStep[]
+  distance: Distance
+  duration: Duration
+  start_location: { lat: number; lng: number }
+  end_location: { lat: number; lng: number }
+  start_address: string
+  end_address: string
+  startLocation?: { lat: number; lng: number }
+  endLocation?: { lat: number; lng: number }
+  startAddress?: string
+  endAddress?: string
+}
+
+export interface DirectionRoute {
+  legs: TransitLeg[]
+  distance: Distance
+  duration: Duration
+  summary: string
+}
+
+export interface DirectionsResponse {
+  routes: DirectionRoute[]
+  status: 'OK' | 'NOT_FOUND' | 'ZERO_RESULTS' | 'MAX_WAYPOINTS_EXCEEDED' | 'REQUEST_DENIED' | 'INVALID_REQUEST' | 'OVER_QUERY_LIMIT' | 'UNKNOWN_ERROR'
+  error?: string
 }

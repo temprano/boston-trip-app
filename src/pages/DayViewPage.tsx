@@ -1,21 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Event } from '../types'
 import { DayEventsGroup } from '../components/DayEventsGroup'
 import { EventInfoPanel } from '../components/EventInfoPanel'
-import { eventDataService } from '../services/eventDataService'
+import { useAppStore } from '../store/appStore'
 
 export function DayViewPage() {
-  const [events, setEvents] = useState<Event[]>([])
-  const [isLoading, setIsLoading] = useState(true)
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
   const [infoType, setInfoType] = useState<'map' | 'transit' | null>(null)
-
-  useEffect(() => {
-    // Load events from local storage
-    const loadedEvents = eventDataService.getEvents()
-    setEvents(loadedEvents)
-    setIsLoading(false)
-  }, [])
+  const events = useAppStore((state) => state.events)
 
   // Group events by date
   const eventsByDate = events.reduce(
@@ -45,14 +37,6 @@ export function DayViewPage() {
   const closeInfoPanel = () => {
     setSelectedEvent(null)
     setInfoType(null)
-  }
-
-  if (isLoading) {
-    return (
-      <div style={{ padding: '32px 16px', textAlign: 'center' }}>
-        <p style={{ color: '#666666' }}>Loading events...</p>
-      </div>
-    )
   }
 
   if (events.length === 0) {

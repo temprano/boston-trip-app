@@ -1,10 +1,13 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Edit2 } from 'lucide-react'
-import { Event } from '../types'
+import { Event, DirectionRoute } from '../types'
 import { EventCTABar } from './EventCTABar'
 import { EditEventForm } from './EditEventForm'
+import { DirectionsPanel } from './DirectionsPanel'
 import { eventDataService } from '../services/eventDataService'
+import { directionsService } from '../services/directionsService'
+import { useAppStore } from '../store/appStore'
 
 interface EventCardProps {
   event: Event
@@ -15,8 +18,18 @@ interface EventCardProps {
 export function EventCard({ event, onMapClick, onTransitClick }: EventCardProps) {
   const navigate = useNavigate()
   const [showEditForm, setShowEditForm] = useState(false)
+  const [showDirections, setShowDirections] = useState(false)
+  const [directionsLoading, setDirectionsLoading] = useState(false)
+  const [directionsError, setDirectionsError] = useState<string | null>(null)
+  const [directionsRoutes, setDirectionsRoutes] = useState<DirectionRoute[]>([])
 
-  const handleTransitClick = () => {
+  // Use separate selectors to avoid object reference changes
+  const currentItinerary = useAppStore((state) => state.currentItinerary)
+  const userLocation = useAppStore((state) => state.userLocation)
+  const baseAddress = useAppStore((state) => state.baseAddress)
+  const directionsOrigin = useAppStore((state) => state.directionsOrigin)
+
+  const handleTransitClick = useCallback(() => {
     // If event has a stopId, navigate to transit page with the stop
     if (event.stopId) {
       navigate(`/transit?stop=${event.stopId}`)
@@ -24,21 +37,85 @@ export function EventCard({ event, onMapClick, onTransitClick }: EventCardProps)
       // Fallback to callback if no stopId
       onTransitClick?.(event)
     }
-  }
+  }, [event, navigate, onTransitClick])
 
-  const handleSaveEvent = async (updatedEvent: Event) => {
+  const handleDirectionsClick = useCallback(async () => {
     try {
-      eventDataService.saveEvents([
-        ...eventDataService.getEvents().filter(e => e.id !== updatedEvent.id),
-        updatedEvent,
-      ])
-      // Reload the page to reflect changes
-      window.location.reload()
-    } catch (error) {
-      console.error('Error saving event:', error)
-      throw error
+      setShowDirections(true)
+      setDirectionsLoading(true)
+      setDirectionsError(null)
+
+      // Determine origin based on directionsOrigin preference
+      let origin: string
+      
+      if (directionsOrigin === 'current') {
+        // User prefers current location
+        if (userLocation) {
+          origin = `${userLocation.lat},${userLocation.lng}`
+          console.log('[EventCard] Using current location:', origin, 'Accuracy:', userLocation.accuracy, 'meters')
+        } else {
+          const error = 'Current location not available. Please enable location in Settings.'
+          console.error('[EventCard] Direction error:', error)
+          setDirectionsError(error)
+          setDirectionsLoading(false)
+          return
+        }
+      } else {
+        // User prefers base address (default)
+        if (baseAddress) {
+          origin = baseAddress
+          console.log('[EventCard] Using base address:', origin)
+        } else {
+          const error = 'Please set a base address in Settings or enable location tracking'
+          console.error('[EventCard] Direction error:', error)
+          setDirectionsError(error)
+          setDirectionsLoading(false)
+          return
+        }
+      }
+
+      // Event destination
+      const destination = `${event.address.line1}, ${event.address.line2}`
+      console.log('[EventCard] Requesting directions:', { origin, destination, mode: 'transit' })
+
+      // Fetch directions from Firebase Cloud Function
+      const response = await directionsService.getDirections(origin, destination, 'transit')
+      console.log('[EventCard] Directions response:', response)
+
+      if (response.status !== 'OK') {
+        setDirectionsError(response.error || 'Could not find directions')
+      } else if (response.routes.length > 0) {
+        setDirectionsRoutes(response.routes)
+      } else {
+        setDirectionsError('No routes found')
+      }
+    } catch (err) {
+      setDirectionsError(err instanceof Error ? err.message : 'Error fetching directions')
+    } finally {
+      setDirectionsLoading(false)
     }
-  }
+  }, [directionsOrigin, userLocation, baseAddress, event.address.line1, event.address.line2])
+
+  const handleSaveEvent = useCallback(async (updatedEvent: Event) => {
+    try {
+      console.log('[EventCard] handleSaveEvent called with updated event:', updatedEvent)
+      
+      if (!currentItinerary?.id) {
+        console.error('[EventCard] No itinerary selected')
+        throw new Error('No itinerary selected')
+      }
+      
+      console.log('[EventCard] Calling eventDataService.updateEvent for itinerary:', currentItinerary.id)
+      // Update locally (works offline)
+      await eventDataService.updateEvent(currentItinerary.id, event.id, updatedEvent)
+      console.log('[EventCard] ✓ Event saved, closing form')
+      
+      setShowEditForm(false)
+    } catch (err) {
+      console.error('[EventCard] Failed to save event:', err)
+      throw err
+    }
+  }, [currentItinerary, event.id])
 
   return (
     <>
@@ -52,9 +129,10 @@ export function EventCard({ event, onMapClick, onTransitClick }: EventCardProps)
             boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
             padding: '16px',
             position: 'relative',
+            marginTop: '-7px',
           }}
         >
-          {/* Corner Image */}
+          {/* Corner Image - Only show if image exists and loads successfully */}
           {event.eventImage && (
             <img
               src={event.eventImage}
@@ -67,6 +145,10 @@ export function EventCard({ event, onMapClick, onTransitClick }: EventCardProps)
                 height: '96px',
                 objectFit: 'cover',
                 borderRadius: '4px',
+              }}
+              onError={(e) => {
+                // Hide image if it fails to load
+                ;(e.target as HTMLImageElement).style.display = 'none'
               }}
             />
           )}
@@ -140,6 +222,7 @@ export function EventCard({ event, onMapClick, onTransitClick }: EventCardProps)
         <EventCTABar
           onMapClick={() => onMapClick?.(event)}
           onTransitClick={handleTransitClick}
+          onDirectionsClick={handleDirectionsClick}
         />
       </div>
 
@@ -149,6 +232,16 @@ export function EventCard({ event, onMapClick, onTransitClick }: EventCardProps)
         isOpen={showEditForm}
         onClose={() => setShowEditForm(false)}
         onSave={handleSaveEvent}
+      />
+
+      {/* Directions Panel Modal */}
+      <DirectionsPanel
+        isOpen={showDirections}
+        onClose={() => setShowDirections(false)}
+        event={event}
+        routes={directionsRoutes}
+        isLoading={directionsLoading}
+        error={directionsError}
       />
     </>
   )

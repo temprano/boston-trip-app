@@ -1,6 +1,8 @@
 import { GooglePlace } from '../types'
 
-const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
+// Firebase Cloud Function URLs
+const FIREBASE_GEOCODE_URL = 'https://us-central1-boston-travel-app-2dcff.cloudfunctions.net/geocodeAddress'
+const FIREBASE_PLACES_URL = 'https://us-central1-boston-travel-app-2dcff.cloudfunctions.net/getNearbyPlaces'
 
 // Type definitions for Google API responses
 interface GeocodeResult {
@@ -40,46 +42,37 @@ interface PlaceDetailsResult {
 
 /**
  * Google Places Service
- * Handles all Google Maps & Places API interactions
+ * Handles all Google Maps & Places API interactions via Firebase Cloud Functions
+ * This avoids CORS issues and keeps the API key server-side
  */
 export const googlePlacesService = {
   /**
-   * Convert address string to coordinates
+   * Convert address string to coordinates via Firebase Cloud Function
    */
   async geocodeAddress(address: string): Promise<GeocodeResult> {
     try {
-      // Improve address format for better geocoding results
-      // Convert "Street, CITY ST ZIP" to "Street, City, ST ZIP"
-      let formattedAddress = address
-      
-      // Convert all-caps city names to proper case
-      const addressParts = address.split(',')
-      if (addressParts.length >= 2) {
-        // Capitalize city and state properly
-        formattedAddress = addressParts
-          .map((part, i) => {
-            const trimmed = part.trim()
-            if (i === 0) return trimmed // Keep street as-is
-            // Capitalize first letter of city, format state abbreviation
-            return trimmed.charAt(0).toUpperCase() + trimmed.slice(1).toLowerCase()
-          })
-          .join(', ')
+      const response = await fetch(FIREBASE_GEOCODE_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ address }),
+      })
+
+      if (!response.ok) {
+        throw new Error(`Geocoding function error: ${response.statusText}`)
       }
 
-      const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(formattedAddress)}&components=country:US&key=${GOOGLE_API_KEY}`
-      )
       const data = await response.json()
 
-      if (!data.results || data.results.length === 0) {
+      if (data.status !== 'OK' || data.lat === null || data.lng === null) {
         console.error('Geocoding response:', data)
-        throw new Error('Address not found')
+        throw new Error(data.error || 'Address not found')
       }
 
-      const location = data.results[0].geometry.location
       return {
-        lat: location.lat,
-        lng: location.lng,
+        lat: data.lat,
+        lng: data.lng,
       }
     } catch (error) {
       console.error('Geocoding error:', error)
@@ -88,7 +81,7 @@ export const googlePlacesService = {
   },
 
   /**
-   * Get nearby places of a specific type within radius
+   * Get nearby places of a specific type within radius via Firebase Cloud Function
    * @param lat - Latitude
    * @param lng - Longitude
    * @param type - Place type: 'restaurant', 'bar', 'museum', 'tourist_attraction'
@@ -101,41 +94,33 @@ export const googlePlacesService = {
     radiusMeters = 800
   ): Promise<GooglePlace[]> {
     try {
-      // Map type to Google Places API keyword/type
-      const typeKeywords: Record<string, string> = {
-        restaurant: 'restaurant',
-        bar: 'bar',
-        museum: 'museum',
-        tourist_attraction: 'tourist_attraction',
-      }
+      const response = await fetch(FIREBASE_PLACES_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          lat,
+          lng,
+          type,
+          radius: radiusMeters,
+        }),
+      })
 
-      const typeQuery = typeKeywords[type] || type
-
-      const response = await fetch(
-        `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=${radiusMeters}&type=${typeQuery}&key=${GOOGLE_API_KEY}`
-      )
-      
       if (!response.ok) {
-        console.error(`API error for ${type}: ${response.status} ${response.statusText}`)
+        console.error(`Places API error for ${type}: ${response.status} ${response.statusText}`)
         return this.getFallbackPlaces(type)
       }
-      
-      const data = (await response.json()) as PlacesNearbyResult
 
-      if (!data.results) {
-        return []
+      const data = await response.json()
+
+      if (data.status !== 'OK' || !data.results) {
+        console.warn(`No results for ${type}:`, data.error)
+        return this.getFallbackPlaces(type)
       }
 
-      // Transform API response to GooglePlace format
-      return data.results.map((place) => ({
-        id: place.place_id,
-        name: place.name,
-        type: type,
-        lat: place.geometry.location.lat,
-        lng: place.geometry.location.lng,
-        rating: place.rating,
-        address: place.formatted_address,
-      }))
+      // Firebase function already returns transformed GooglePlace format
+      return data.results
     } catch (error) {
       console.error(`Error fetching ${type} places:`, error)
       return this.getFallbackPlaces(type)

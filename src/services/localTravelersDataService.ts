@@ -29,6 +29,32 @@ export const localTravelersDataService = {
   },
 
   /**
+   * Create a new traveler
+   */
+  createTraveler(traveler: Omit<Traveler, 'id'>): Traveler {
+    const travelers = this.getTravelers()
+    const newTraveler: Traveler = {
+      ...traveler,
+      id: `traveler_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+    }
+    travelers.push(newTraveler)
+    this.saveTravelers(travelers)
+    return newTraveler
+  },
+
+  /**
+   * Add a traveler with existing ID (useful for batch imports)
+   */
+  addTraveler(traveler: Traveler): void {
+    const travelers = this.getTravelers()
+    const exists = travelers.find((t) => t.id === traveler.id)
+    if (!exists) {
+      travelers.push(traveler)
+      this.saveTravelers(travelers)
+    }
+  },
+
+  /**
    * Update a traveler's information
    */
   updateTraveler(id: string, updates: Partial<Traveler>): Traveler | null {
@@ -58,6 +84,7 @@ export const localTravelersDataService = {
   saveTravelers(travelers: Traveler[]): void {
     try {
       localStorage.setItem(TRAVELERS_STORAGE_KEY, JSON.stringify(travelers))
+      console.log(`✓ Saved ${travelers.length} travelers to localStorage`)
     } catch (error) {
       console.error('Error saving travelers to local storage:', error)
     }
@@ -79,6 +106,7 @@ export const localTravelersDataService = {
   clearAll(): void {
     try {
       localStorage.removeItem(TRAVELERS_STORAGE_KEY)
+      console.log('✓ Cleared travelers from localStorage')
     } catch (error) {
       console.error('Error clearing travelers from local storage:', error)
     }

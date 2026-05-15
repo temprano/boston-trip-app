@@ -12,24 +12,61 @@ export default defineConfig({
       devOptions: {
         enabled: false, // Disable Service Worker in development for hot reload
       },
-      includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
-      manifest: {
-        name: 'Boston Itinerary Planner',
-        short_name: 'BostonTrip',
-        description: 'A PWA for planning your Boston trip',
-        theme_color: '#1a1a2e',
-        background_color: '#ffffff',
-        display: 'standalone',
-        icons: [
+      includeAssets: [
+        'favicon.svg',
+        'manifest.json',
+        'robots.txt',
+        'pwa/icons/android/*.png',
+        'pwa/icons/ios/*.png',
+        'pwa/icons/windows/*.png',
+      ],
+      manifest: false, // Use external manifest.json file instead
+      workbox: {
+        clientsClaim: true,
+        skipWaiting: true,
+        cleanupOutdatedCaches: true,
+        runtimeCaching: [
           {
-            src: 'pwa-192x192.png',
-            sizes: '192x192',
-            type: 'image/png',
+            urlPattern: /^https:\/\/firestore\.googleapis\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'firestore-cache',
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 24 * 60 * 60, // 24 hours
+              },
+            },
           },
           {
-            src: 'pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
+            urlPattern: /^https:\/\/maps\.googleapis\.com\/.*/i,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'google-maps-cache',
+              expiration: {
+                maxAgeSeconds: 7 * 24 * 60 * 60, // 7 days
+              },
+            },
+          },
+          {
+            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'google-fonts-cache',
+              expiration: {
+                maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
+              },
+            },
+          },
+          {
+            urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'image-cache',
+              expiration: {
+                maxEntries: 200,
+                maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
+              },
+            },
           },
         ],
       },
