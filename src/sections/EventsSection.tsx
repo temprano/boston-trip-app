@@ -33,11 +33,6 @@ export function EventsSection({ title = 'Events & Activities' }: EventsSectionPr
     setInfoType('map')
   }
 
-  const handleTransitClick = (event: Event) => {
-    setSelectedEvent(event)
-    setInfoType('transit')
-  }
-
   const closeInfoPanel = () => {
     setSelectedEvent(null)
     setInfoType(null)
@@ -87,7 +82,6 @@ export function EventsSection({ title = 'Events & Activities' }: EventsSectionPr
               date={date}
               events={eventsByDate[date]}
               onMapClick={handleMapClick}
-              onTransitClick={handleTransitClick}
             />
           ))}
         </div>

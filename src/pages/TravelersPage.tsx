@@ -5,7 +5,7 @@ export function TravelersPage() {
   const travelers = useAppStore((state) => state.travelers)
 
   return (
-    <div style={{ padding: '16px', backgroundColor: '#ffffff', minHeight: '100%', paddingBottom: '100px' }}>
+    <div style={{ padding: '16px', backgroundColor: '#ffffff', minHeight: '100%', paddingBottom: '160px' }}>
       {/* MEET THE TEAM Header */}
       {/* <h1 style={{ fontSize: 'clamp(20px, 6vw, 28px)', fontWeight: 'bold', marginBottom: '6px', color: '#ffffff', backgroundColor: '#000000', padding: '6px 10px', borderRadius: '4px', display: 'inline-block', letterSpacing: '-1.68px' }}>
         MEET THE TEAM

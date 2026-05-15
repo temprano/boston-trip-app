@@ -407,7 +407,7 @@ export function SettingsPage() {
 
             <div className="bg-gray-700 dark:bg-gray-600 p-2 rounded mb-3">
               <p className="text-xs font-mono text-gray-200 break-all">
-                https://boston-trip-4lvp9y2xa-tempranos-projects.vercel.app/
+                https://boston-trip-app.vercel.app/
               </p>
             </div>
 

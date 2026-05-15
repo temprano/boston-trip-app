@@ -2,7 +2,7 @@ const QRCode = require('qrcode');
 const path = require('path');
 const fs = require('fs');
 
-const deploymentUrl = 'https://boston-trip-4lvp9y2xa-tempranos-projects.vercel.app/';
+const deploymentUrl = 'https://boston-trip-app.vercel.app/';
 const outputPath = path.join(__dirname, 'public', 'boston-trip-qr.png');
 
 // Ensure public directory exists

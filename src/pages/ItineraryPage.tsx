@@ -1,14 +1,28 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { EventCard } from '../components/EventCard'
 import { WeatherBug } from '../components/WeatherBug'
+import { EventInfoPanel } from '../components/EventInfoPanel'
+import { Event } from '../types'
 import { useAppStore } from '../store/appStore'
 import { MapPin, Home } from 'lucide-react'
 
 export function ItineraryPage() {
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
+  const [infoType, setInfoType] = useState<'map' | 'transit' | null>(null)
   const events = useAppStore((state) => state.events)
   const userLocation = useAppStore((state) => state.userLocation)
   const directionsOrigin = useAppStore((state) => state.directionsOrigin)
   const setDirectionsOrigin = useAppStore((state) => state.setDirectionsOrigin)
+
+  const handleMapClick = (event: Event) => {
+    setSelectedEvent(event)
+    setInfoType('map')
+  }
+
+  const closeInfoPanel = () => {
+    setSelectedEvent(null)
+    setInfoType(null)
+  }
 
   // Filter today's events (or first day's events if today has none)
   const currentDayEvents = useMemo(() => {
@@ -164,10 +178,19 @@ export function ItineraryPage() {
             }}
           >
             {currentDayEvents.map((event) => (
-              <EventCard key={event.id} event={event} />
+              <EventCard key={event.id} event={event} onMapClick={handleMapClick} />
             ))}
           </div>
         </>
+      )}
+
+      {/* Info Panel */}
+      {selectedEvent && infoType && (
+        <EventInfoPanel
+          event={selectedEvent}
+          infoType={infoType}
+          onClose={closeInfoPanel}
+        />
       )}
     </div>
   )

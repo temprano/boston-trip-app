@@ -12,10 +12,9 @@ import { useAppStore } from '../store/appStore'
 interface EventCardProps {
   event: Event
   onMapClick?: (event: Event) => void
-  onTransitClick?: (event: Event) => void
 }
 
-export function EventCard({ event, onMapClick, onTransitClick }: EventCardProps) {
+export function EventCard({ event, onMapClick }: EventCardProps) {
   const navigate = useNavigate()
   const [showEditForm, setShowEditForm] = useState(false)
   const [showDirections, setShowDirections] = useState(false)
@@ -30,14 +29,15 @@ export function EventCard({ event, onMapClick, onTransitClick }: EventCardProps)
   const directionsOrigin = useAppStore((state) => state.directionsOrigin)
 
   const handleTransitClick = useCallback(() => {
-    // If event has a stopId, navigate to transit page with the stop
+    // Always navigate to transit page for real MBTA data
+    // If event has a stopId, use it; otherwise just open transit page
     if (event.stopId) {
       navigate(`/transit?stop=${event.stopId}`)
     } else {
-      // Fallback to callback if no stopId
-      onTransitClick?.(event)
+      // Navigate to transit page - user can search for transit there
+      navigate('/transit')
     }
-  }, [event, navigate, onTransitClick])
+  }, [event, navigate])
 
   const handleDirectionsClick = useCallback(async () => {
     try {

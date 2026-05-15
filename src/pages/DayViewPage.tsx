@@ -29,11 +29,6 @@ export function DayViewPage() {
     setInfoType('map')
   }
 
-  const handleTransitClick = (event: Event) => {
-    setSelectedEvent(event)
-    setInfoType('transit')
-  }
-
   const closeInfoPanel = () => {
     setSelectedEvent(null)
     setInfoType(null)
@@ -97,7 +92,6 @@ export function DayViewPage() {
               date={date}
               events={eventsByDate[date]}
               onMapClick={handleMapClick}
-              onTransitClick={handleTransitClick}
             />
           ))}
         </div>

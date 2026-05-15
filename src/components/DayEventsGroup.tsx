@@ -6,14 +6,12 @@ interface DayEventsGroupProps {
   date: string
   events: Event[]
   onMapClick?: (event: Event) => void
-  onTransitClick?: (event: Event) => void
 }
 
 export function DayEventsGroup({
   date,
   events,
   onMapClick,
-  onTransitClick,
 }: DayEventsGroupProps) {
   return (
     <div style={{ marginBottom: '24px' }}>
@@ -29,7 +27,6 @@ export function DayEventsGroup({
             key={event.id}
             event={event}
             onMapClick={onMapClick}
-            onTransitClick={onTransitClick}
           />
         ))}
       </div>

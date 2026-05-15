@@ -11,7 +11,8 @@
       "line2": "BOSTON MA 02210"
     },
     "eventImage": "/assets/bkgrd/tea-party.png",
-    "category": "Museum"
+    "category": "Museum",
+    "stopId": "place-haecl"
   },
   {
     "id": "2",
@@ -25,7 +26,8 @@
       "line2": "BOSTON MA 02108"
     },
     "eventImage": "/assets/bkgrd/cheers.png",
-    "category": "Lunch"
+    "category": "Lunch",
+    "stopId": "place-pktrm"
   },
   {
     "id": "3",
@@ -38,7 +40,8 @@
       "line2": "BOSTON MA 02113"
     },
     "eventImage": "/assets/bkgrd/revere.png",
-    "category": "Museum"
+    "category": "Museum",
+    "stopId": "place-haecl"
   },
   {
     "id": "4",
@@ -51,7 +54,8 @@
       "line2": "BOSTON MA 02115"
     },
     "eventImage": "/assets/bkgrd/boston_braves.png",
-    "category": "Sports"
+    "category": "Sports",
+    "stopId": "place-fenwy"
   },
   {
     "id": "5",
@@ -64,7 +68,8 @@
       "line2": "BOSTON MA 02114"
     },
     "eventImage": "/assets/bkgrd/duck.png",
-    "category": "Tour"
+    "category": "Tour",
+    "stopId": "place-north"
   },
   {
     "id": "6",
@@ -77,7 +82,8 @@
       "line2": "BOSTON MA 02111"
     },
     "eventImage": "/assets/bkgrd/freedom-trail.png",
-    "category": "Tour"
+    "category": "Tour",
+    "stopId": "place-pktrm"
   },
   {
     "id": "7",
@@ -90,7 +96,8 @@
       "line2": "BOSTON MA 02115"
     },
     "eventImage": "/assets/bkgrd/boston_braves.png",
-    "category": "Tour"
+    "category": "Tour",
+    "stopId": "place-fenwy"
   },
   {
     "id": "8",
@@ -104,7 +111,8 @@
       "line2": "HYANNIS MA 02601"
     },
     "eventImage": "/assets/bkgrd/van.png",
-    "category": "Tour"
+    "category": "Tour",
+    "stopId": "place-sstat"
   },
   {
     "id": "9",
@@ -118,7 +126,8 @@
       "line2": "JAMAICA PLAIN, MA 02130"
     },
     "eventImage": "/assets/bkgrd/sam_adams.png",
-    "category": "Tour"
+    "category": "Tour",
+    "stopId": "place-grnst"
   },
   {
     "id": "10",
@@ -132,6 +141,7 @@
       "line2": "BOSTON, MA 02110"
     },
     "eventImage": "/assets/bkgrd/harbor.png",
-    "category": "Tour"
+    "category": "Tour",
+    "stopId": "place-sstat"
   }
 ]
