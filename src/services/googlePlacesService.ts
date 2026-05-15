@@ -10,36 +10,6 @@ interface GeocodeResult {
   lng: number
 }
 
-interface PlacesNearbyResponse {
-  results: Array<{
-    place_id: string
-    name: string
-    rating?: number
-    formatted_address?: string
-    geometry: {
-      location: {
-        lat: number
-        lng: number
-      }
-    }
-    opening_hours?: {
-      open_now?: boolean
-      weekday_text?: string[]
-    }
-    types: string[]
-  }>
-}
-
-interface PlaceDetailsResult {
-  result: {
-    formatted_phone_number?: string
-    website?: string
-    opening_hours?: {
-      weekday_text?: string[]
-    }
-  }
-}
-
 /**
  * Google Places Service
  * Handles all Google Maps & Places API interactions via Firebase Cloud Functions
@@ -158,7 +128,7 @@ export const googlePlacesService = {
   /**
    * Get detailed information about a specific place
    */
-  async getPlaceDetails(placeId: string): Promise<Partial<GooglePlace>> {
+  async getPlaceDetails(): Promise<Partial<GooglePlace>> {
     try {
       // Note: Direct API calls to Google Places require GOOGLE_API_KEY
       // For production, this should be proxied through Firebase Cloud Function

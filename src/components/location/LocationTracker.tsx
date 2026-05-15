@@ -26,7 +26,8 @@ export function LocationTracker() {
       setUserLocation({
         lat: location.lat,
         lng: location.lng,
-        name: 'Your Location',
+        accuracy: location.accuracy,
+        timestamp: location.timestamp,
       })
     } catch (err) {
       setError(
@@ -49,7 +50,8 @@ export function LocationTracker() {
           setUserLocation({
             lat: location.lat,
             lng: location.lng,
-            name: 'Your Location',
+            accuracy: location.accuracy,
+            timestamp: location.timestamp,
           })
         },
         (err) => {
