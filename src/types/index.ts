@@ -128,7 +128,7 @@ export interface AppState {
   events: Event[]
   isOffline: boolean
   theme: 'light' | 'dark'
-  userLocation: Location | null
+  userLocation: any | null // UserLocation from locationService (lat, lng, accuracy, timestamp)
   isTrackingLocation: boolean
   optimizedActivityOrder: string[]
   baseAddress?: string

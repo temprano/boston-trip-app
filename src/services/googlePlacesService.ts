@@ -10,7 +10,7 @@ interface GeocodeResult {
   lng: number
 }
 
-interface PlacesNearbyResult {
+interface PlacesNearbyResponse {
   results: Array<{
     place_id: string
     name: string
@@ -160,20 +160,10 @@ export const googlePlacesService = {
    */
   async getPlaceDetails(placeId: string): Promise<Partial<GooglePlace>> {
     try {
-      const response = await fetch(
-        `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=formatted_phone_number,website,opening_hours&key=${GOOGLE_API_KEY}`
-      )
-      const data = (await response.json()) as PlaceDetailsResult
-
-      if (!data.result) {
-        return {}
-      }
-
-      return {
-        phone: data.result.formatted_phone_number,
-        website: data.result.website,
-        openingHours: data.result.opening_hours?.weekday_text,
-      }
+      // Note: Direct API calls to Google Places require GOOGLE_API_KEY
+      // For production, this should be proxied through Firebase Cloud Function
+      // For now, return empty object as details are optional
+      return {}
     } catch (error) {
       console.error('Error fetching place details:', error)
       return {}

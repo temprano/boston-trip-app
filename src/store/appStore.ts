@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
-import { Itinerary, Traveler, Event, AppState, Location } from '../types'
+import { Itinerary, Traveler, Event, AppState } from '../types'
+import { UserLocation } from '../services/locationService'
 import { localTravelersDataService } from '../services/localTravelersDataService'
 
 export interface AppStore extends AppState {
@@ -10,7 +11,7 @@ export interface AppStore extends AppState {
   setEvents: (events: Event[]) => void
   setIsOffline: (isOffline: boolean) => void
   setTheme: (theme: 'light' | 'dark') => void
-  setUserLocation: (location: Location | null) => void
+  setUserLocation: (location: UserLocation | null) => void
   setIsTrackingLocation: (isTracking: boolean) => void
   setOptimizedActivityOrder: (activityIds: string[]) => void
   setBaseAddress: (address: string) => void
