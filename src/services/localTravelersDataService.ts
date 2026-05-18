@@ -33,9 +33,19 @@ export const localTravelersDataService = {
    */
   createTraveler(traveler: Omit<Traveler, 'id'>): Traveler {
     const travelers = this.getTravelers()
+    
+    // Find the largest numeric ID and add 1
+    let maxId = 0
+    travelers.forEach((t) => {
+      const numId = parseInt(t.id, 10)
+      if (!isNaN(numId) && numId > maxId) {
+        maxId = numId
+      }
+    })
+    
     const newTraveler: Traveler = {
       ...traveler,
-      id: `traveler_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      id: String(maxId + 1),
     }
     travelers.push(newTraveler)
     this.saveTravelers(travelers)

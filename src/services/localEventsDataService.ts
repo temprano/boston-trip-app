@@ -33,9 +33,19 @@ export const localEventsDataService = {
    */
   createEvent(event: Omit<Event, 'id'>): Event {
     const events = this.getEvents()
+    
+    // Find the largest numeric ID and add 1
+    let maxId = 0
+    events.forEach((e) => {
+      const numId = parseInt(e.id, 10)
+      if (!isNaN(numId) && numId > maxId) {
+        maxId = numId
+      }
+    })
+    
     const newEvent: Event = {
       ...event,
-      id: `event_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      id: String(maxId + 1),
     }
     events.push(newEvent)
     this.saveEvents(events)
