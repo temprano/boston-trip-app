@@ -288,7 +288,7 @@ export function SettingsPage() {
         <h2 className="text-lg font-semibold mb-4 pb-3" style={{ color: '#ffffff', borderBottom: '2px solid #ffffff' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '18px', marginBottom: '18px'}}>
             <MapPin className="w-5 h-5" />
-            Base Address (Airbnb)
+            Base Address (Vrbo Location)
           </div>
         </h2>
 

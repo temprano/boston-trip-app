@@ -116,7 +116,7 @@ export function HomePage() {
                 <>
                   <Home size={20} color="#2255cc" />
                   <span style={{ color: '#2255cc', fontWeight: 'bold', fontSize: '15px' }}>
-                    Base Address (Airbnb)
+                    Base Address (Vrbo Location)
                   </span>
                   <span style={{ color: '#4caf50', fontSize: '12px', marginLeft: 'auto' }}>
                     ✓ Default
