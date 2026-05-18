@@ -76,7 +76,8 @@ export function TravelerEditForm({ traveler, onSave, onDelete, onCancel, isAddMo
       setError(null)
       setIsSaving(true)
       await onSave(formData)
-      // onCancel will be called by parent when state updates
+      // Close modal after successful save
+      onCancel()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to save traveler')
     } finally {

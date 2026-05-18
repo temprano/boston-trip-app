@@ -29,7 +29,7 @@ export function TravelersPage() {
       }
     }
     
-    setShowAddForm(false)
+    // Form will close itself after save completes
   }
 
   return (

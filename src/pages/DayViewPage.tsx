@@ -64,7 +64,7 @@ export function DayViewPage() {
       await firebaseSyncService.syncEventToFirebase(currentItinerary.id, newEvent)
     }
     
-    setShowAddEventForm(false)
+    // Form will close itself after save completes
   }
 
   if (events.length === 0) {

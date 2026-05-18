@@ -108,9 +108,9 @@ export function EventCard({ event, onMapClick }: EventCardProps) {
       console.log('[EventCard] Calling eventDataService.updateEvent for itinerary:', currentItinerary.id)
       // Update locally (works offline)
       await eventDataService.updateEvent(currentItinerary.id, event.id, updatedEvent)
-      console.log('[EventCard] ✓ Event saved, closing form')
+      console.log('[EventCard] ✓ Event saved')
       
-      setShowEditForm(false)
+      // Form will close itself after save completes
     } catch (err) {
       console.error('[EventCard] Failed to save event:', err)
       throw err
@@ -137,7 +137,7 @@ export function EventCard({ event, onMapClick }: EventCardProps) {
       await firebaseSyncService.deleteEventFromFirebase(currentItinerary.id, eventId)
       console.log('[EventCard] ✓ Event deleted')
       
-      setShowEditForm(false)
+      // Form will close itself after delete completes
     } catch (err) {
       console.error('[EventCard] Failed to delete event:', err)
       throw err

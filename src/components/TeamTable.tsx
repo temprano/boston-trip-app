@@ -50,7 +50,7 @@ export function TeamTable({ travelers, onAddClick }: TeamTableProps) {
         }
       }
       
-      setEditingTraveler(null)
+      // Form will close itself after save completes
     }
   }
 
@@ -76,7 +76,7 @@ export function TeamTable({ travelers, onAddClick }: TeamTableProps) {
       }
     }
     
-    setEditingTraveler(null)
+    // Form will close itself after delete completes
   }
 
   return (
