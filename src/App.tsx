@@ -166,7 +166,7 @@ function App() {
         // Start Firebase sync for itinerary
         console.log('[App] Initializing Firebase sync with itinerary ID:', itineraryToUse.id)
         eventDataService.initializeSync(itineraryToUse.id)
-        travelersDataService.initializeSync(itineraryToUse.id)
+        await travelersDataService.initializeSync(itineraryToUse.id)
         console.log('[App] ✓ Firebase sync initialized')
 
         // One-time sync: push local events with nearestStopId up to Firebase

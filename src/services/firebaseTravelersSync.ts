@@ -63,6 +63,19 @@ class FirebaseTravelersSyncService {
             // Update localStorage
             localStorage.setItem('boston_travelers_local', JSON.stringify(merged))
             console.log('[firebaseTravelersSyncService] Updated localStorage with merged travelers')
+            
+            // CRITICAL: Update Zustand store so UI reflects changes
+            try {
+              import('../store/appStore').then((mod) => {
+                const { setTravelers } = mod.useAppStore.getState()
+                setTravelers(merged)
+                console.log('[firebaseTravelersSyncService] ✓ Updated Zustand store with', merged.length, 'travelers from remote sync')
+              }).catch((error) => {
+                console.warn('[firebaseTravelersSyncService] Could not update Zustand store:', error)
+              })
+            } catch (error) {
+              console.warn('[firebaseTravelersSyncService] Could not update Zustand store:', error)
+            }
           } catch (error) {
             console.error('[firebaseTravelersSyncService] Error processing snapshot:', error)
           }
@@ -176,6 +189,15 @@ class FirebaseTravelersSyncService {
       
       // Update localStorage with merged data
       localStorage.setItem('boston_travelers_local', JSON.stringify(merged))
+      
+      // CRITICAL: Also update Zustand store so UI reflects new travelers
+      try {
+        const { setTravelers } = await import('../store/appStore').then(m => m.useAppStore.getState())
+        setTravelers(merged)
+        console.log('[firebaseTravelersSyncService] ✓ Updated Zustand store with', merged.length, 'travelers')
+      } catch (error) {
+        console.warn('[firebaseTravelersSyncService] Could not update Zustand store:', error)
+      }
       
       return merged
     } catch (error) {
