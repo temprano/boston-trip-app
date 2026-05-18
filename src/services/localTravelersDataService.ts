@@ -79,6 +79,23 @@ export const localTravelersDataService = {
   },
 
   /**
+   * Delete a traveler
+   */
+  deleteTraveler(id: string): boolean {
+    const travelers = this.getTravelers()
+    const index = travelers.findIndex((t) => t.id === id)
+
+    if (index === -1) {
+      console.error(`Traveler with id ${id} not found`)
+      return false
+    }
+
+    travelers.splice(index, 1)
+    this.saveTravelers(travelers)
+    return true
+  },
+
+  /**
    * Save all travelers to local storage
    */
   saveTravelers(travelers: Traveler[]): void {

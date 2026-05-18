@@ -7,6 +7,8 @@ import { EditEventForm } from './EditEventForm'
 import { DirectionsPanel } from './DirectionsPanel'
 import { eventDataService } from '../services/eventDataService'
 import { directionsService } from '../services/directionsService'
+import { firebaseSyncService } from '../services/firebaseSyncService'
+import { localEventsDataService } from '../services/localEventsDataService'
 import { useAppStore } from '../store/appStore'
 
 interface EventCardProps {
@@ -114,6 +116,33 @@ export function EventCard({ event, onMapClick }: EventCardProps) {
       throw err
     }
   }, [currentItinerary, event.id])
+
+  const handleDeleteEvent = useCallback(async (eventId: string) => {
+    try {
+      console.log('[EventCard] handleDeleteEvent called for event:', eventId)
+      
+      if (!currentItinerary?.id) {
+        console.error('[EventCard] No itinerary selected')
+        throw new Error('No itinerary selected')
+      }
+      
+      // Delete from local storage
+      localEventsDataService.deleteEvent(eventId)
+      
+      // Update Zustand store
+      const updatedEvents = useAppStore.getState().events.filter(e => e.id !== eventId)
+      useAppStore.getState().setEvents(updatedEvents)
+      
+      // Delete from Firebase
+      await firebaseSyncService.deleteEventFromFirebase(currentItinerary.id, eventId)
+      console.log('[EventCard] ✓ Event deleted')
+      
+      setShowEditForm(false)
+    } catch (err) {
+      console.error('[EventCard] Failed to delete event:', err)
+      throw err
+    }
+  }, [currentItinerary])
 
   return (
     <>
@@ -230,6 +259,7 @@ export function EventCard({ event, onMapClick }: EventCardProps) {
         isOpen={showEditForm}
         onClose={() => setShowEditForm(false)}
         onSave={handleSaveEvent}
+        onDelete={handleDeleteEvent}
       />
 
       {/* Directions Panel Modal */}

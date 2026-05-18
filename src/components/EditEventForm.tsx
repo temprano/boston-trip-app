@@ -23,6 +23,7 @@ interface EditEventFormProps {
   isOpen: boolean
   onClose: () => void
   onSave: (updatedEvent: Event) => Promise<void>
+  onDelete?: (eventId: string) => Promise<void>
   isAddMode?: boolean
 }
 
@@ -58,13 +59,15 @@ const createBlankEvent = (): Event => ({
   category: '',
 })
 
-export function EditEventForm({ event, isOpen, onClose, onSave, isAddMode = false }: EditEventFormProps) {
+export function EditEventForm({ event, isOpen, onClose, onSave, onDelete, isAddMode = false }: EditEventFormProps) {
   const [formData, setFormData] = useState<Event>(event ? {
     ...event,
     phone: event.phone || '',
   } : createBlankEvent())
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 
   // Reset form data when event changes or form opens
   useEffect(() => {
@@ -148,6 +151,22 @@ export function EditEventForm({ event, isOpen, onClose, onSave, isAddMode = fals
       setError(err instanceof Error ? err.message : 'Failed to save event')
     } finally {
       setIsSaving(false)
+    }
+  }
+
+  const handleDelete = async () => {
+    if (!event?.id || !onDelete) return
+
+    try {
+      setError(null)
+      setIsDeleting(true)
+      await onDelete(event.id)
+      setShowDeleteConfirm(false)
+      onClose()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete event')
+    } finally {
+      setIsDeleting(false)
     }
   }
 
@@ -397,7 +416,7 @@ export function EditEventForm({ event, isOpen, onClose, onSave, isAddMode = fals
         <div style={{ display: 'flex', gap: '12px', marginTop: '24px', justifyContent: 'flex-end' }}>
           <button
             onClick={onClose}
-            disabled={isSaving}
+            disabled={isSaving || isDeleting}
             style={{
               padding: '10px 20px',
               border: '1px solid #ddd',
@@ -405,17 +424,37 @@ export function EditEventForm({ event, isOpen, onClose, onSave, isAddMode = fals
               borderRadius: '4px',
               fontSize: '14px',
               fontWeight: 'bold',
-              cursor: 'pointer',
+              cursor: isSaving || isDeleting ? 'not-allowed' : 'pointer',
               color: '#333',
-              opacity: isSaving ? 0.6 : 1,
+              opacity: isSaving || isDeleting ? 0.6 : 1,
               transition: 'all 0.2s',
             }}
           >
             Cancel
           </button>
+          {!isAddMode && (
+            <button
+              onClick={() => setShowDeleteConfirm(true)}
+              disabled={isSaving || isDeleting}
+              style={{
+                padding: '10px 20px',
+                border: 'none',
+                background: '#dc2626',
+                borderRadius: '4px',
+                fontSize: '14px',
+                fontWeight: 'bold',
+                cursor: isSaving || isDeleting ? 'not-allowed' : 'pointer',
+                color: '#ffffff',
+                opacity: isSaving || isDeleting ? 0.7 : 1,
+                transition: 'all 0.2s',
+              }}
+            >
+              {isDeleting ? 'Deleting...' : 'Delete'}
+            </button>
+          )}
           <button
             onClick={handleSave}
-            disabled={isSaving}
+            disabled={isSaving || isDeleting}
             style={{
               padding: '10px 20px',
               border: 'none',
@@ -423,15 +462,89 @@ export function EditEventForm({ event, isOpen, onClose, onSave, isAddMode = fals
               borderRadius: '4px',
               fontSize: '14px',
               fontWeight: 'bold',
-              cursor: isSaving ? 'not-allowed' : 'pointer',
+              cursor: isSaving || isDeleting ? 'not-allowed' : 'pointer',
               color: '#ffffff',
-              opacity: isSaving ? 0.7 : 1,
+              opacity: isSaving || isDeleting ? 0.7 : 1,
               transition: 'all 0.2s',
             }}
           >
             {isSaving ? 'Saving...' : 'Save'}
           </button>
         </div>
+
+        {/* Delete Confirmation Dialog */}
+        {showDeleteConfirm && (
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: 'rgba(0, 0, 0, 0.7)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 200,
+              borderRadius: '8px',
+            }}
+            onClick={() => !isDeleting && setShowDeleteConfirm(false)}
+          >
+            <div
+              style={{
+                backgroundColor: '#ffffff',
+                borderRadius: '8px',
+                padding: '24px',
+                maxWidth: '300px',
+                color: '#000000',
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3 style={{ margin: '0 0 12px 0', fontSize: '18px', fontWeight: 'bold' }}>
+                Delete "{formData.title}"?
+              </h3>
+              <p style={{ margin: '0 0 20px 0', fontSize: '14px', color: '#666666' }}>
+                This action cannot be undone. The event will be removed from the itinerary.
+              </p>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <button
+                  onClick={() => setShowDeleteConfirm(false)}
+                  disabled={isDeleting}
+                  style={{
+                    flex: 1,
+                    padding: '10px 16px',
+                    backgroundColor: '#e0e0e0',
+                    border: 'none',
+                    borderRadius: '4px',
+                    color: '#000000',
+                    cursor: isDeleting ? 'not-allowed' : 'pointer',
+                    fontSize: '14px',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                  style={{
+                    flex: 1,
+                    padding: '10px 16px',
+                    backgroundColor: isDeleting ? '#9ca3af' : '#dc2626',
+                    border: 'none',
+                    borderRadius: '4px',
+                    color: '#ffffff',
+                    cursor: isDeleting ? 'not-allowed' : 'pointer',
+                    fontSize: '14px',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  {isDeleting ? 'Deleting...' : 'Delete'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

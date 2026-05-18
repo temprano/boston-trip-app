@@ -5,6 +5,7 @@ import { X } from 'lucide-react'
 interface TravelerEditFormProps {
   traveler?: Traveler
   onSave: (traveler: Traveler) => Promise<void> | void
+  onDelete?: (travelerId: string) => Promise<void>
   onCancel: () => void
   isAddMode?: boolean
 }
@@ -28,10 +29,12 @@ const createBlankTraveler = (): Traveler => ({
   },
 })
 
-export function TravelerEditForm({ traveler, onSave, onCancel, isAddMode = false }: TravelerEditFormProps) {
+export function TravelerEditForm({ traveler, onSave, onDelete, onCancel, isAddMode = false }: TravelerEditFormProps) {
   const [formData, setFormData] = useState<Traveler>(traveler || createBlankTraveler())
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 
   const handleInputChange = (field: keyof Traveler, value: any) => {
     setFormData((prev) => ({
@@ -78,6 +81,22 @@ export function TravelerEditForm({ traveler, onSave, onCancel, isAddMode = false
       setError(err instanceof Error ? err.message : 'Failed to save traveler')
     } finally {
       setIsSaving(false)
+    }
+  }
+
+  const handleDelete = async () => {
+    if (!traveler?.id || !onDelete) return
+
+    try {
+      setError(null)
+      setIsDeleting(true)
+      await onDelete(traveler.id)
+      setShowDeleteConfirm(false)
+      // onCancel will be called by parent when state updates
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete traveler')
+    } finally {
+      setIsDeleting(false)
     }
   }
 
@@ -415,8 +434,104 @@ export function TravelerEditForm({ traveler, onSave, onCancel, isAddMode = false
             >
               {isSaving ? 'Saving...' : (isAddMode ? 'Add Team Member' : 'Save Changes')}
             </button>
+            {!isAddMode && (
+              <button
+                type="button"
+                onClick={() => setShowDeleteConfirm(true)}
+                disabled={isDeleting}
+                style={{
+                  padding: '10px 16px',
+                  backgroundColor: isDeleting ? '#9ca3af' : '#dc2626',
+                  border: 'none',
+                  borderRadius: '4px',
+                  color: '#ffffff',
+                  cursor: isDeleting ? 'not-allowed' : 'pointer',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                  opacity: isDeleting ? 0.7 : 1,
+                }}
+              >
+                {isDeleting ? 'Deleting...' : 'Delete'}
+              </button>
+            )}
           </div>
         </form>
+
+        {/* Delete Confirmation Dialog */}
+        {showDeleteConfirm && (
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: 'rgba(0, 0, 0, 0.7)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 200,
+              borderRadius: '8px',
+            }}
+            onClick={() => !isDeleting && setShowDeleteConfirm(false)}
+          >
+            <div
+              style={{
+                backgroundColor: '#ffffff',
+                borderRadius: '8px',
+                padding: '24px',
+                maxWidth: '300px',
+                color: '#000000',
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3 style={{ margin: '0 0 12px 0', fontSize: '18px', fontWeight: 'bold' }}>
+                Delete {formData.name}?
+              </h3>
+              <p style={{ margin: '0 0 20px 0', fontSize: '14px', color: '#666666' }}>
+                This action cannot be undone. The traveler will be removed from the team.
+              </p>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <button
+                  type="button"
+                  onClick={() => setShowDeleteConfirm(false)}
+                  disabled={isDeleting}
+                  style={{
+                    flex: 1,
+                    padding: '10px 16px',
+                    backgroundColor: '#e0e0e0',
+                    border: 'none',
+                    borderRadius: '4px',
+                    color: '#000000',
+                    cursor: isDeleting ? 'not-allowed' : 'pointer',
+                    fontSize: '14px',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                  style={{
+                    flex: 1,
+                    padding: '10px 16px',
+                    backgroundColor: isDeleting ? '#9ca3af' : '#dc2626',
+                    border: 'none',
+                    borderRadius: '4px',
+                    color: '#ffffff',
+                    cursor: isDeleting ? 'not-allowed' : 'pointer',
+                    fontSize: '14px',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  {isDeleting ? 'Deleting...' : 'Delete'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

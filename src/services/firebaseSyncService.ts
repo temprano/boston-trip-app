@@ -2,6 +2,7 @@ import {
   collection,
   doc,
   setDoc,
+  deleteDoc,
   onSnapshot,
   getDocs,
 } from 'firebase/firestore'
@@ -160,6 +161,22 @@ class FirebaseSyncService {
       const localEvents = localEventsDataService.getEvents()
       console.log('[firebaseSyncService] Falling back to', localEvents.length, 'local events')
       return localEvents
+    }
+  }
+
+  /**
+   * Delete an event from Firebase
+   */
+  async deleteEventFromFirebase(itineraryId: string, eventId: string): Promise<void> {
+    if (!db) return // Firebase not configured
+    
+    try {
+      const eventRef = doc(db, `itineraries/${itineraryId}/events`, eventId)
+      await deleteDoc(eventRef)
+      console.log('[firebaseSyncService] ✓ Event deleted from Firebase:', eventId)
+    } catch (error) {
+      console.error('[firebaseSyncService] Firebase delete failed:', error)
+      // Don't throw - delete failures shouldn't break local operations
     }
   }
 

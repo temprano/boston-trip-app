@@ -2,6 +2,7 @@ import {
   collection,
   doc,
   setDoc,
+  deleteDoc,
   onSnapshot,
   getDocs,
 } from 'firebase/firestore'
@@ -205,6 +206,22 @@ class FirebaseTravelersSyncService {
       const localTravelers = localTravelersDataService.getTravelers()
       console.log('[firebaseTravelersSyncService] Falling back to', localTravelers.length, 'local travelers')
       return localTravelers
+    }
+  }
+
+  /**
+   * Delete a traveler from Firebase
+   */
+  async deleteTravelerFromFirebase(itineraryId: string, travelerId: string): Promise<void> {
+    if (!db) return // Firebase not configured
+    
+    try {
+      const travelerRef = doc(db, `itineraries/${itineraryId}/travelers`, travelerId)
+      await deleteDoc(travelerRef)
+      console.log('[firebaseTravelersSyncService] ✓ Traveler deleted from Firebase:', travelerId)
+    } catch (error) {
+      console.error('[firebaseTravelersSyncService] Firebase delete failed:', error)
+      // Don't throw - delete failures shouldn't break local operations
     }
   }
 

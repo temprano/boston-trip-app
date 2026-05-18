@@ -54,6 +54,31 @@ export function TeamTable({ travelers, onAddClick }: TeamTableProps) {
     }
   }
 
+  const handleEditDelete = async (travelerId: string) => {
+    // Delete from local storage
+    localTravelersDataService.deleteTraveler(travelerId)
+    
+    // Get updated list
+    const allTravelers = localTravelersDataService.getTravelers()
+    setLocalTravelers(allTravelers)
+    
+    // Update Zustand store
+    setTravelersInStore(allTravelers)
+    
+    // Delete from Firebase
+    const currentItinerary = useAppStore.getState().currentItinerary
+    if (currentItinerary?.id) {
+      try {
+        await firebaseTravelersSyncService.deleteTravelerFromFirebase(currentItinerary.id, travelerId)
+        console.log('[TeamTable] ✓ Traveler deleted from Firebase:', travelerId)
+      } catch (error) {
+        console.error('[TeamTable] Failed to delete traveler from Firebase:', error)
+      }
+    }
+    
+    setEditingTraveler(null)
+  }
+
   return (
     <>
       <div className="space-y-6">
@@ -220,6 +245,7 @@ export function TeamTable({ travelers, onAddClick }: TeamTableProps) {
         <TravelerEditForm
           traveler={editingTraveler}
           onSave={handleEditSave}
+          onDelete={handleEditDelete}
           onCancel={() => setEditingTraveler(null)}
         />
       )}
