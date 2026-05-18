@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore'
+import { getFirestore } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
 // import { getAuth } from 'firebase/auth'  // Not used in app
 
@@ -33,7 +33,6 @@ let app: any
 let db: any
 let storage: any
 let auth: any = null  // Not initialized - not used in app
-let emulatorInitialized = false
 
 try {
   console.log('[Firebase] Starting initialization...')
@@ -50,28 +49,7 @@ try {
     storage = getStorage(app)
     console.log('[Firebase] Storage initialized:', !!storage)
 
-    // Enable Firestore emulator in development (only once, safely)
-    if (import.meta.env.DEV && !emulatorInitialized) {
-      try {
-        console.log('[Firebase] DEV mode detected, checking emulator...')
-        emulatorInitialized = true
-        // Check if already connected before attempting
-        const settings = (db as any)._firestoreClient?.settings
-        if (settings && !settings.host?.includes('localhost')) {
-          console.log('[Firebase] Connecting to emulator...')
-          connectFirestoreEmulator(db, 'localhost', 8080)
-          console.log('[Firebase] ✓ Firestore emulator connected')
-        } else {
-          console.log('[Firebase] Emulator already connected or not available')
-        }
-      } catch (error: any) {
-        // Ignore errors - already initialized or emulator not running
-        console.log('[Firebase] Emulator connection note:', error?.message || 'not available')
-      }
-    } else {
-      console.log('[Firebase] Production mode or already initialized')
-    }
-    console.log('[Firebase] ✓ Firebase initialization complete')
+    console.log('[Firebase] ✓ Firebase initialization complete - using real Firestore database')
   } else {
     console.log('[Firebase] Not configured, using offline mode')
     // Create dummy objects so imports don't break

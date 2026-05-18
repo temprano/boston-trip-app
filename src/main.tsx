@@ -2,6 +2,8 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
+import { migrateLocalEventsToFirebase } from './services/firebaseMigration'
+import { migrateLocalTravelersToFirebase } from './services/firebaseTravelersMigration'
 
 // Register service worker for PWA with proper update handling
 if ('serviceWorker' in navigator) {
@@ -74,6 +76,10 @@ window.addEventListener('appinstalled', () => {
 })
 
 ;(window as Window & { deferredPrompt?: BeforeInstallPromptEvent | null }).deferredPrompt = deferredPrompt
+
+// Expose migration functions for manual console access
+;(window as any).__migrateLocalEventsToFirebase = migrateLocalEventsToFirebase
+;(window as any).__migrateLocalTravelersToFirebase = migrateLocalTravelersToFirebase
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

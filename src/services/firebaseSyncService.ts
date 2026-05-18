@@ -50,7 +50,7 @@ class FirebaseSyncService {
     console.log('[firebaseSyncService] Setting up new subscription...')
     
     try {
-      const eventsRef = collection(db, `itineraries/${itineraryId}/events`)
+      const eventsRef = collection(db, 'events')
       console.log('[firebaseSyncService] Events ref created:', eventsRef.path)
       
       const unsubscribe = onSnapshot(
@@ -89,7 +89,7 @@ class FirebaseSyncService {
    * Sync a single event to Firebase
    * Called when local event is created/updated
    */
-  async syncEventToFirebase(itineraryId: string, event: Event): Promise<void> {
+  async syncEventToFirebase(_itineraryId: string, event: Event): Promise<void> {
     console.log('[firebaseSyncService] syncEventToFirebase called for event:', event.id)
     
     if (!db) {
@@ -98,7 +98,7 @@ class FirebaseSyncService {
     }
     
     try {
-      const eventRef = doc(db, `itineraries/${itineraryId}/events`, event.id)
+      const eventRef = doc(db, 'events', event.id)
       console.log('[firebaseSyncService] Writing event to:', eventRef.path)
       console.log('[firebaseSyncService] Event data:', event)
       
@@ -138,7 +138,7 @@ class FirebaseSyncService {
     }
     
     try {
-      const eventsRef = collection(db, `itineraries/${itineraryId}/events`)
+      const eventsRef = collection(db, 'events')
       console.log('[firebaseSyncService] Fetching events from:', eventsRef.path)
       
       const snapshot = await getDocs(eventsRef)
@@ -167,11 +167,11 @@ class FirebaseSyncService {
   /**
    * Delete an event from Firebase
    */
-  async deleteEventFromFirebase(itineraryId: string, eventId: string): Promise<void> {
+  async deleteEventFromFirebase(_itineraryId: string, eventId: string): Promise<void> {
     if (!db) return // Firebase not configured
     
     try {
-      const eventRef = doc(db, `itineraries/${itineraryId}/events`, eventId)
+      const eventRef = doc(db, 'events', eventId)
       await deleteDoc(eventRef)
       console.log('[firebaseSyncService] ✓ Event deleted from Firebase:', eventId)
     } catch (error) {
