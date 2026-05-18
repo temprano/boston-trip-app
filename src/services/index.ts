@@ -2,6 +2,8 @@
 export { app, db, storage } from './firebase'
 export { itineraryService } from './itineraryService'
 export { eventDataService } from './eventDataService'
+export { travelersDataService } from './travelersDataService'
+export { firebaseTravelersSyncService } from './firebaseTravelersSync'
 export { travelersService } from './travelersService'
 export { dataSyncService } from './dataSyncService'
 

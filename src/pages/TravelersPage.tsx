@@ -3,19 +3,31 @@ import { useAppStore } from '../store'
 import { TeamTable } from '../components/TeamTable'
 import { Traveler } from '../types'
 import { TravelerEditForm } from '../components/TravelerEditForm'
+import { firebaseTravelersSyncService } from '../services/firebaseTravelersSync'
 
 export function TravelersPage() {
   const travelers = useAppStore((state) => state.travelers)
   const setTravelers = useAppStore((state) => state.setTravelers)
   const [showAddForm, setShowAddForm] = useState(false)
 
-  const handleAddTraveler = (newTraveler: Traveler) => {
+  const handleAddTraveler = async (newTraveler: Traveler) => {
     // Add to local state
     const updatedTravelers = [...travelers, newTraveler]
     setTravelers(updatedTravelers)
     
     // Save to localStorage
     localStorage.setItem('boston_travelers_local', JSON.stringify(updatedTravelers))
+    
+    // Sync new traveler to Firebase
+    const currentItinerary = useAppStore.getState().currentItinerary
+    if (currentItinerary?.id) {
+      try {
+        await firebaseTravelersSyncService.syncTravelerToFirebase(currentItinerary.id, newTraveler)
+        console.log('[TravelersPage] ✓ New traveler synced to Firebase:', newTraveler.id)
+      } catch (error) {
+        console.error('[TravelersPage] Failed to sync new traveler to Firebase:', error)
+      }
+    }
     
     setShowAddForm(false)
   }

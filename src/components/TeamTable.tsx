@@ -3,6 +3,7 @@ import { Traveler } from '../types'
 import { Edit2, Phone, Plane, Plus } from 'lucide-react'
 import { TravelerEditForm } from './TravelerEditForm'
 import { localTravelersDataService } from '../services/localTravelersDataService'
+import { firebaseTravelersSyncService } from '../services/firebaseTravelersSync'
 import { useAppStore } from '../store/appStore'
 
 interface TeamTableProps {
@@ -26,15 +27,29 @@ export function TeamTable({ travelers, onAddClick }: TeamTableProps) {
     setEditingTraveler(traveler)
   }
 
-  const handleEditSave = (updatedData: Partial<Traveler>) => {
+  const handleEditSave = async (updatedData: Partial<Traveler>) => {
     if (!editingTraveler) return
 
     const updated = localTravelersDataService.updateTraveler(editingTraveler.id, updatedData)
     if (updated) {
       const allTravelers = localTravelersDataService.getTravelers()
+      const updatedTraveler = allTravelers.find(t => t.id === editingTraveler.id)
+      
       setLocalTravelers(allTravelers)
       // Sync back to Zustand store
       setTravelersInStore(allTravelers)
+      
+      // Sync updated traveler to Firebase
+      const currentItinerary = useAppStore.getState().currentItinerary
+      if (currentItinerary?.id && updatedTraveler) {
+        try {
+          await firebaseTravelersSyncService.syncTravelerToFirebase(currentItinerary.id, updatedTraveler)
+          console.log('[TeamTable] ✓ Traveler synced to Firebase:', updatedTraveler.id)
+        } catch (error) {
+          console.error('[TeamTable] Failed to sync traveler to Firebase:', error)
+        }
+      }
+      
       setEditingTraveler(null)
     }
   }

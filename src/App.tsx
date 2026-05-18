@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { Router } from './router'
 import { useAppStore } from './store'
 import { eventDataService } from './services/eventDataService'
+import { travelersDataService } from './services/travelersDataService'
 import { localTravelersDataService } from './services/localTravelersDataService'
 import { syncLocalEventsToFirebaseOnce } from './services/syncLocalEventsToFirebase'
 import initialTravelers from './data/initialTravelers.json'
@@ -165,6 +166,7 @@ function App() {
         // Start Firebase sync for itinerary
         console.log('[App] Initializing Firebase sync with itinerary ID:', itineraryToUse.id)
         eventDataService.initializeSync(itineraryToUse.id)
+        travelersDataService.initializeSync(itineraryToUse.id)
         console.log('[App] ✓ Firebase sync initialized')
 
         // One-time sync: push local events with nearestStopId up to Firebase
@@ -181,6 +183,7 @@ function App() {
     // Cleanup
     return () => {
       eventDataService.stopSync()
+      travelersDataService.stopSync()
     }
   }, [])
 
