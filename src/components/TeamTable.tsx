@@ -43,14 +43,15 @@ export function TeamTable({ travelers, onAddClick }: TeamTableProps) {
       const currentItinerary = useAppStore.getState().currentItinerary
       if (currentItinerary?.id && updatedTraveler) {
         try {
+          console.log('[TeamTable.handleEditSave] Syncing traveler to Firebase:', updatedTraveler.id)
           await firebaseTravelersSyncService.syncTravelerToFirebase(currentItinerary.id, updatedTraveler)
-          console.log('[TeamTable] ✓ Traveler synced to Firebase:', updatedTraveler.id)
+          console.log('[TeamTable.handleEditSave] ✓ Traveler synced to Firebase:', updatedTraveler.id)
         } catch (error) {
-          console.error('[TeamTable] Failed to sync traveler to Firebase:', error)
+          console.error('[TeamTable.handleEditSave] Failed to sync traveler to Firebase:', error)
         }
       }
       
-      // Form will close itself after save completes
+      console.log('[TeamTable.handleEditSave] (Form will call onCancel to close itself)')
     }
   }
 

@@ -105,12 +105,11 @@ export function EventCard({ event, onMapClick }: EventCardProps) {
         throw new Error('No itinerary selected')
       }
       
-      console.log('[EventCard] Calling eventDataService.updateEvent for itinerary:', currentItinerary.id)
-      // Update locally (works offline)
+      console.log('[EventCard.handleSaveEvent] Calling eventDataService.updateEvent for itinerary:', currentItinerary.id)
+      // Update locally (works offline) - this also syncs to Firebase
       await eventDataService.updateEvent(currentItinerary.id, event.id, updatedEvent)
-      console.log('[EventCard] ✓ Event saved')
-      
-      // Form will close itself after save completes
+      console.log('[EventCard.handleSaveEvent] ✓ Event saved and synced')
+      console.log('[EventCard.handleSaveEvent] (Form will call onClose to close itself)')
     } catch (err) {
       console.error('[EventCard] Failed to save event:', err)
       throw err
@@ -134,8 +133,10 @@ export function EventCard({ event, onMapClick }: EventCardProps) {
       useAppStore.getState().setEvents(updatedEvents)
       
       // Delete from Firebase
+      console.log('[EventCard.handleDeleteEvent] Deleting from Firebase')
       await firebaseSyncService.deleteEventFromFirebase(currentItinerary.id, eventId)
-      console.log('[EventCard] ✓ Event deleted')
+      console.log('[EventCard.handleDeleteEvent] ✓ Event deleted')
+      console.log('[EventCard.handleDeleteEvent] (Form will call onDelete callback which calls onClose)')
       
       // Form will close itself after delete completes
     } catch (err) {

@@ -91,10 +91,12 @@ export function TravelerEditForm({ traveler, onSave, onDelete, onCancel, isAddMo
     try {
       setError(null)
       setIsDeleting(true)
+      console.log('[TravelerEditForm.handleDelete] Deleting traveler:', traveler.id)
       await onDelete(traveler.id)
+      console.log('[TravelerEditForm.handleDelete] ✓ Delete completed, calling onCancel()')
       setShowDeleteConfirm(false)
-      // Close the entire form modal after successful delete
       onCancel()
+      console.log('[TravelerEditForm.handleDelete] ✓ onCancel() called')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete traveler')
       setIsDeleting(false)

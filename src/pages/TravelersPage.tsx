@@ -22,14 +22,15 @@ export function TravelersPage() {
     const currentItinerary = useAppStore.getState().currentItinerary
     if (currentItinerary?.id) {
       try {
+        console.log('[TravelersPage.handleAddTraveler] Syncing new traveler to Firebase:', newTraveler.id)
         await firebaseTravelersSyncService.syncTravelerToFirebase(currentItinerary.id, newTraveler)
-        console.log('[TravelersPage] ✓ New traveler synced to Firebase:', newTraveler.id)
+        console.log('[TravelersPage.handleAddTraveler] ✓ New traveler synced to Firebase:', newTraveler.id)
       } catch (error) {
-        console.error('[TravelersPage] Failed to sync new traveler to Firebase:', error)
+        console.error('[TravelersPage.handleAddTraveler] Failed to sync new traveler to Firebase:', error)
       }
     }
     
-    // Form will close itself after save completes
+    console.log('[TravelersPage.handleAddTraveler] (Form will call onCancel to close itself)')
   }
 
   return (

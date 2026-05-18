@@ -145,8 +145,11 @@ export function EditEventForm({ event, isOpen, onClose, onSave, onDelete, isAddM
         date: convertDateToISO(formData.date),
       }
 
+      console.log('[EditEventForm.handleSave] Calling onSave callback...')
       await onSave(eventToSave)
+      console.log('[EditEventForm.handleSave] ✓ onSave completed, now calling onClose()')
       onClose()
+      console.log('[EditEventForm.handleSave] ✓ onClose() called')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to save event')
     } finally {
@@ -161,9 +164,10 @@ export function EditEventForm({ event, isOpen, onClose, onSave, onDelete, isAddM
       setError(null)
       setIsDeleting(true)
       await onDelete(event.id)
+      console.log('[EditEventForm.handleDelete] Delete completed, calling onClose()')
       setShowDeleteConfirm(false)
-      // Close the entire form modal after successful delete
       onClose()
+      console.log('[EditEventForm.handleDelete] ✓ onClose() called')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete event')
       setIsDeleting(false)
