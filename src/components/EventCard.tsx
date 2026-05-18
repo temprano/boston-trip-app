@@ -167,8 +167,8 @@ export function EventCard({ event, onMapClick }: EventCardProps) {
               alt="Event logo"
               style={{
                 position: 'absolute',
-                top: '8px',
-                right: '14px',
+                top: '2px',
+                right: '17px',
                 width: '96px',
                 height: '96px',
                 objectFit: 'cover',
