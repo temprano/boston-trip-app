@@ -216,7 +216,7 @@ export function SettingsPage() {
           )}
 
           {/* Test Location Button */}
-          <button
+          {/* <button
             onClick={() => {
               const testLocation = {
                 lat: 42.3601,
@@ -237,7 +237,7 @@ export function SettingsPage() {
             }}
           >
             🧪 Demo: Boston (Testing Only)
-          </button>
+          </button> */}
 
           {/* Instructions */}
           <div

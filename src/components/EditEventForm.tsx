@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Event } from '../types'
+import { localEventsDataService } from '../services/localEventsDataService'
 
 // MBTA Quick Stops for nearestStopId selection
 const QUICK_STOPS = [
@@ -25,8 +26,24 @@ interface EditEventFormProps {
   isAddMode?: boolean
 }
 
+const getNextEventId = (): string => {
+  const events = localEventsDataService.getEvents()
+  if (events.length === 0) return '1'
+  
+  // Find the max numeric ID
+  const numericIds = events
+    .map(e => {
+      const match = e.id.match(/^(\d+)$/) || e.id.match(/^event[_-](\d+)/)
+      return match ? parseInt(match[1], 10) : 0
+    })
+    .filter(id => id > 0)
+  
+  const maxId = numericIds.length > 0 ? Math.max(...numericIds) : 0
+  return String(maxId + 1)
+}
+
 const createBlankEvent = (): Event => ({
-  id: `event-${Date.now()}`,
+  id: getNextEventId(),
   title: '',
   venue: '',
   date: '',
@@ -109,7 +126,23 @@ export function EditEventForm({ event, isOpen, onClose, onSave, isAddMode = fals
         return
       }
 
-      await onSave(formData)
+      // Convert date from MM/DD/YYYY to ISO format (YYYY-MM-DD) for consistency
+      const convertDateToISO = (dateStr: string) => {
+        // If already ISO format, return as-is
+        if (dateStr.includes('-')) {
+          return dateStr
+        }
+        // Convert MM/DD/YYYY to YYYY-MM-DD
+        const [month, day, year] = dateStr.split('/')
+        return `${year}-${month}-${day}`
+      }
+
+      const eventToSave = {
+        ...formData,
+        date: convertDateToISO(formData.date),
+      }
+
+      await onSave(eventToSave)
       onClose()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to save event')

@@ -1,5 +1,5 @@
 import { useAppStore } from '../store/appStore'
-import { DayView } from '../sections/DayView'
+import { WeatherBug } from '../components/WeatherBug'
 import { MapPin, Home } from 'lucide-react'
 
 export function HomePage() {
@@ -27,16 +27,6 @@ export function HomePage() {
     )
   }
 
-  // Get today's date in MM/DD/YYYY format
-  const today = new Date()
-  const todayStr = `${String(today.getMonth() + 1).padStart(2, '0')}/${String(today.getDate()).padStart(2, '0')}/${today.getFullYear()}`
-
-  // Find the current day in the itinerary
-  const currentDay = itinerary.days.find((day) => day.date === todayStr)
-
-  // Fallback to first day if today is not in the itinerary
-  const dayToDisplay = currentDay || itinerary.days[0]
-
   return (
     <div
       style={{
@@ -62,8 +52,13 @@ export function HomePage() {
         </p>
       </div>
 
-      {/* Main Section - DayView for current day */}
+      {/* Main Section */}
       <div style={{ flex: 1, overflow: 'auto', padding: '16px' }}>
+        {/* Weather Display - Above Directions Card */}
+        <div style={{ marginBottom: '16px' }}>
+          <WeatherBug />
+        </div>
+
         {/* Location Toggle Card */}
         <div
           style={{
@@ -186,9 +181,6 @@ export function HomePage() {
             House details
           </span>
         </div>
-
-        {/* DayView */}
-        <DayView day={dayToDisplay} />
       </div>
     </div>
   )

@@ -5,7 +5,7 @@ import { EventInfoPanel } from '../components/EventInfoPanel'
 import { EditEventForm } from '../components/EditEventForm'
 import { useAppStore } from '../store/appStore'
 import { Plus } from 'lucide-react'
-import { syncLocalEventsToFirebaseOnce } from '../services/syncLocalEventsToFirebase'
+import { firebaseSyncService } from '../services/firebaseSyncService'
 
 export function DayViewPage() {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
@@ -27,8 +27,19 @@ export function DayViewPage() {
     {} as Record<string, Event[]>
   )
 
-  // Sort dates chronologically
-  const sortedDates = Object.keys(eventsByDate).sort()
+  // Sort dates chronologically (handles both ISO YYYY-MM-DD and MM/DD/YYYY formats)
+  const sortedDates = Object.keys(eventsByDate).sort((a, b) => {
+    const parseDate = (dateStr: string) => {
+      // Check if it's ISO format (YYYY-MM-DD)
+      if (dateStr.includes('-')) {
+        return new Date(dateStr).getTime()
+      }
+      // Otherwise assume MM/DD/YYYY format
+      const [month, day, year] = dateStr.split('/')
+      return new Date(parseInt(year), parseInt(month) - 1, parseInt(day)).getTime()
+    }
+    return parseDate(a) - parseDate(b)
+  })
 
   const handleMapClick = (event: Event) => {
     setSelectedEvent(event)
@@ -48,9 +59,9 @@ export function DayViewPage() {
     // Save to localStorage
     localStorage.setItem('boston_events_local', JSON.stringify(updatedEvents))
     
-    // Sync to Firebase on-demand
+    // Sync new event to Firebase directly
     if (currentItinerary?.id) {
-      await syncLocalEventsToFirebaseOnce(currentItinerary.id)
+      await firebaseSyncService.syncEventToFirebase(currentItinerary.id, newEvent)
     }
     
     setShowAddEventForm(false)
