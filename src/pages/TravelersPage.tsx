@@ -3,33 +3,23 @@ import { useAppStore } from '../store'
 import { TeamTable } from '../components/TeamTable'
 import { Traveler } from '../types'
 import { TravelerEditForm } from '../components/TravelerEditForm'
-import { firebaseTravelersSyncService } from '../services/firebaseTravelersSync'
+import { travelersDataService } from '../services/travelersDataService'
 
 export function TravelersPage() {
   const travelers = useAppStore((state) => state.travelers)
-  const setTravelers = useAppStore((state) => state.setTravelers)
+  const currentItinerary = useAppStore((state) => state.currentItinerary)
   const [showAddForm, setShowAddForm] = useState(false)
 
   const handleAddTraveler = async (newTraveler: Traveler) => {
-    // Add to local state
-    const updatedTravelers = [...travelers, newTraveler]
-    setTravelers(updatedTravelers)
-    
-    // Save to localStorage
-    localStorage.setItem('boston_travelers_local', JSON.stringify(updatedTravelers))
-    
-    // Sync new traveler to Firebase
-    const currentItinerary = useAppStore.getState().currentItinerary
-    if (currentItinerary?.id) {
-      try {
-        console.log('[TravelersPage.handleAddTraveler] Syncing new traveler to Firebase:', newTraveler.id)
-        await firebaseTravelersSyncService.syncTravelerToFirebase(currentItinerary.id, newTraveler)
-        console.log('[TravelersPage.handleAddTraveler] ✓ New traveler synced to Firebase:', newTraveler.id)
-      } catch (error) {
-        console.error('[TravelersPage.handleAddTraveler] Failed to sync new traveler to Firebase:', error)
-      }
+    if (!currentItinerary?.id) {
+      console.error('[TravelersPage] No itinerary selected')
+      throw new Error('No itinerary selected')
     }
-    
+
+    console.log('[TravelersPage.handleAddTraveler] Calling travelersDataService.addTraveler for new traveler:', newTraveler.id)
+    // Add locally and sync to Firebase asynchronously
+    await travelersDataService.addTraveler(currentItinerary.id, newTraveler)
+    console.log('[TravelersPage.handleAddTraveler] ✓ Traveler added')
     console.log('[TravelersPage.handleAddTraveler] (Form will call onCancel to close itself)')
   }
 

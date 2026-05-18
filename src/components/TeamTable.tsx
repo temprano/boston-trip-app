@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react'
 import { Traveler } from '../types'
 import { Edit2, Phone, Plane, Plus } from 'lucide-react'
 import { TravelerEditForm } from './TravelerEditForm'
+import { travelersDataService } from '../services/travelersDataService'
 import { localTravelersDataService } from '../services/localTravelersDataService'
-import { firebaseTravelersSyncService } from '../services/firebaseTravelersSync'
 import { useAppStore } from '../store/appStore'
 
 interface TeamTableProps {
@@ -13,8 +13,6 @@ interface TeamTableProps {
 
 export function TeamTable({ travelers, onAddClick }: TeamTableProps) {
   const [editingTraveler, setEditingTraveler] = useState<Traveler | null>(null)
-  const [localTravelers, setLocalTravelers] = useState<Traveler[]>(travelers)
-  const setTravelersInStore = useAppStore((state) => state.setTravelers)
 
   // Initialize local datastore
   useEffect(() => {
@@ -30,53 +28,30 @@ export function TeamTable({ travelers, onAddClick }: TeamTableProps) {
   const handleEditSave = async (updatedData: Partial<Traveler>) => {
     if (!editingTraveler) return
 
-    const updated = localTravelersDataService.updateTraveler(editingTraveler.id, updatedData)
-    if (updated) {
-      const allTravelers = localTravelersDataService.getTravelers()
-      const updatedTraveler = allTravelers.find(t => t.id === editingTraveler.id)
-      
-      setLocalTravelers(allTravelers)
-      // Sync back to Zustand store
-      setTravelersInStore(allTravelers)
-      
-      // Sync updated traveler to Firebase
-      const currentItinerary = useAppStore.getState().currentItinerary
-      if (currentItinerary?.id && updatedTraveler) {
-        try {
-          console.log('[TeamTable.handleEditSave] Syncing traveler to Firebase:', updatedTraveler.id)
-          await firebaseTravelersSyncService.syncTravelerToFirebase(currentItinerary.id, updatedTraveler)
-          console.log('[TeamTable.handleEditSave] ✓ Traveler synced to Firebase:', updatedTraveler.id)
-        } catch (error) {
-          console.error('[TeamTable.handleEditSave] Failed to sync traveler to Firebase:', error)
-        }
-      }
-      
-      console.log('[TeamTable.handleEditSave] (Form will call onCancel to close itself)')
+    const currentItinerary = useAppStore.getState().currentItinerary
+    if (!currentItinerary?.id) {
+      console.error('[TeamTable] No itinerary selected')
+      throw new Error('No itinerary selected')
     }
+
+    console.log('[TeamTable.handleEditSave] Calling travelersDataService.updateTraveler for traveler:', editingTraveler.id)
+    // Update locally and sync to Firebase asynchronously
+    await travelersDataService.updateTraveler(currentItinerary.id, editingTraveler.id, updatedData)
+    console.log('[TeamTable.handleEditSave] ✓ Traveler saved')
+    console.log('[TeamTable.handleEditSave] (Form will call onCancel to close itself)')
   }
 
   const handleEditDelete = async (travelerId: string) => {
-    // Delete from local storage
-    localTravelersDataService.deleteTraveler(travelerId)
-    
-    // Get updated list
-    const allTravelers = localTravelersDataService.getTravelers()
-    setLocalTravelers(allTravelers)
-    
-    // Update Zustand store
-    setTravelersInStore(allTravelers)
-    
-    // Delete from Firebase
     const currentItinerary = useAppStore.getState().currentItinerary
-    if (currentItinerary?.id) {
-      try {
-        await firebaseTravelersSyncService.deleteTravelerFromFirebase(currentItinerary.id, travelerId)
-        console.log('[TeamTable] ✓ Traveler deleted from Firebase:', travelerId)
-      } catch (error) {
-        console.error('[TeamTable] Failed to delete traveler from Firebase:', error)
-      }
+    if (!currentItinerary?.id) {
+      console.error('[TeamTable] No itinerary selected')
+      throw new Error('No itinerary selected')
     }
-    
+
+    console.log('[TeamTable.handleEditDelete] Calling travelersDataService.deleteTraveler for traveler:', travelerId)
+    // Delete locally and sync to Firebase asynchronously
+    await travelersDataService.deleteTraveler(currentItinerary.id, travelerId)
+    console.log('[TeamTable.handleEditDelete] ✓ Traveler deleted')
     // Form will close itself after delete completes
   }
 
@@ -125,7 +100,7 @@ export function TeamTable({ travelers, onAddClick }: TeamTableProps) {
         </div>
 
         <div className="space-y-1">
-          {localTravelers.map((traveler) => (
+          {travelers.map((traveler) => (
             <div
               key={traveler.id}
               style={{
