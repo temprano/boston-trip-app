@@ -162,10 +162,10 @@ export function EditEventForm({ event, isOpen, onClose, onSave, onDelete, isAddM
       setIsDeleting(true)
       await onDelete(event.id)
       setShowDeleteConfirm(false)
+      // Close the entire form modal after successful delete
       onClose()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete event')
-    } finally {
       setIsDeleting(false)
     }
   }

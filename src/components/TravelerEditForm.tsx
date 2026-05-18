@@ -92,10 +92,10 @@ export function TravelerEditForm({ traveler, onSave, onDelete, onCancel, isAddMo
       setIsDeleting(true)
       await onDelete(traveler.id)
       setShowDeleteConfirm(false)
-      // onCancel will be called by parent when state updates
+      // Close the entire form modal after successful delete
+      onCancel()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete traveler')
-    } finally {
       setIsDeleting(false)
     }
   }
