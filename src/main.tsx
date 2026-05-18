@@ -73,7 +73,7 @@ window.addEventListener('appinstalled', () => {
   if (installBtn) installBtn.style.display = 'none'
 })
 
-;(window as any).deferredPrompt = deferredPrompt
+;(window as Window & { deferredPrompt?: BeforeInstallPromptEvent | null }).deferredPrompt = deferredPrompt
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

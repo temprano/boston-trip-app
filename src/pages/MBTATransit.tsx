@@ -386,9 +386,9 @@ export function MBTATransit({ defaultStopId }: MBTATransitProps) {
           predLastMod.current = result.lastModified
           setPredictions(result.data?.data || [])
           if (result.data?.included) {
-            setIncludedStops(result.data.included.filter((i) => i.type === 'stop') as any as IncludedStop[])
-            setIncludedTrips(result.data.included.filter((i) => i.type === 'trip') as any as IncludedTrip[])
-            setRoutes(result.data.included.filter((i) => i.type === 'route') as any as Route[])
+            setIncludedStops(result.data.included.filter((i) => i.type === 'stop') as unknown as IncludedStop[])
+            setIncludedTrips(result.data.included.filter((i) => i.type === 'trip') as unknown as IncludedTrip[])
+            setRoutes(result.data.included.filter((i) => i.type === 'route') as unknown as Route[])
           }
           setLastUpdated(new Date())
         }
@@ -527,6 +527,7 @@ export function MBTATransit({ defaultStopId }: MBTATransitProps) {
     if (stopIdParam && !selectedStop) {
       const quickStop = QUICK_STOPS.find(qs => qs.id === stopIdParam)
       if (quickStop) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         selectQuickStop(quickStop)
       }
     }
@@ -549,6 +550,7 @@ export function MBTATransit({ defaultStopId }: MBTATransitProps) {
 
   useEffect(() => {
     if (selectedStop && routes.length > 0) {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       fetchAlerts(selectedStop)
     }
   }, [selectedStop, routes, fetchAlerts])
@@ -557,6 +559,7 @@ export function MBTATransit({ defaultStopId }: MBTATransitProps) {
 
   useEffect(() => {
     if (activeTab === 'vehicles' && routes.length > 0) {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       fetchVehicles()
     }
   }, [activeTab, routes, fetchVehicles])

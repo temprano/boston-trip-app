@@ -91,7 +91,7 @@ export interface Event {
   }
   eventImage: string
   category?: string
-  stopId?: string
+  nearestStopId?: string
 }
 
 export interface GooglePlace {

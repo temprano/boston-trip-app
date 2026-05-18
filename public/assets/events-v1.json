@@ -12,7 +12,7 @@
     },
     "eventImage": "/bkgrd/tea-party.png",
     "category": "Museum",
-    "stopId": "place-haecl"
+    "nearestStopId": "place-haecl"
   },
   {
     "id": "2",
@@ -27,7 +27,7 @@
     },
     "eventImage": "/bkgrd/cheers.png",
     "category": "Lunch",
-    "stopId": "place-pktrm"
+    "nearestStopId": "place-pktrm"
   },
   {
     "id": "3",
@@ -41,7 +41,7 @@
     },
     "eventImage": "/bkgrd/revere.png",
     "category": "Museum",
-    "stopId": "place-haecl"
+    "nearestStopId": "place-haecl"
   },
   {
     "id": "4",
@@ -55,7 +55,7 @@
     },
     "eventImage": "/bkgrd/boston_braves.png",
     "category": "Sports",
-    "stopId": "place-fenwy"
+    "nearestStopId": "place-fenwy"
   },
   {
     "id": "5",
@@ -69,7 +69,7 @@
     },
     "eventImage": "/bkgrd/duck.png",
     "category": "Tour",
-    "stopId": "place-north"
+    "nearestStopId": "place-north"
   },
   {
     "id": "6",
@@ -83,7 +83,7 @@
     },
     "eventImage": "/bkgrd/freedom-trail.png",
     "category": "Tour",
-    "stopId": "place-pktrm"
+    "nearestStopId": "place-pktrm"
   },
   {
     "id": "7",
@@ -97,7 +97,7 @@
     },
     "eventImage": "/bkgrd/boston_braves.png",
     "category": "Tour",
-    "stopId": "place-fenwy"
+    "nearestStopId": "place-fenwy"
   },
   {
     "id": "8",
@@ -112,7 +112,7 @@
     },
     "eventImage": "/bkgrd/van.png",
     "category": "Tour",
-    "stopId": "place-sstat"
+    "nearestStopId": "place-sstat"
   },
   {
     "id": "9",
@@ -127,7 +127,7 @@
     },
     "eventImage": "/bkgrd/sam_adams.png",
     "category": "Tour",
-    "stopId": "place-bbsta"
+    "nearestStopId": "place-bbsta"
   },
   {
     "id": "10",
@@ -142,6 +142,6 @@
     },
     "eventImage": "/bkgrd/harbor.png",
     "category": "Tour",
-    "stopId": "place-sstat"
+    "nearestStopId": "place-sstat"
   }
 ]

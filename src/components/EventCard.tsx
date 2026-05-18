@@ -29,12 +29,10 @@ export function EventCard({ event, onMapClick }: EventCardProps) {
   const directionsOrigin = useAppStore((state) => state.directionsOrigin)
 
   const handleTransitClick = useCallback(() => {
-    // Always navigate to transit page for real MBTA data
-    // If event has a stopId, use it; otherwise just open transit page
-    if (event.stopId) {
-      navigate(`/transit?stop=${event.stopId}`)
+    if (event.nearestStopId) {
+      console.log('Navigating to:', `/transit?stop=${event.nearestStopId}`)
+      navigate(`/transit?stop=${event.nearestStopId}`)
     } else {
-      // Navigate to transit page - user can search for transit there
       navigate('/transit')
     }
   }, [event, navigate])

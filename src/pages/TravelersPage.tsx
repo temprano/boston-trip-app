@@ -1,8 +1,24 @@
+import { useState } from 'react'
 import { useAppStore } from '../store'
 import { TeamTable } from '../components/TeamTable'
+import { Traveler } from '../types'
+import { TravelerEditForm } from '../components/TravelerEditForm'
 
 export function TravelersPage() {
   const travelers = useAppStore((state) => state.travelers)
+  const setTravelers = useAppStore((state) => state.setTravelers)
+  const [showAddForm, setShowAddForm] = useState(false)
+
+  const handleAddTraveler = (newTraveler: Traveler) => {
+    // Add to local state
+    const updatedTravelers = [...travelers, newTraveler]
+    setTravelers(updatedTravelers)
+    
+    // Save to localStorage
+    localStorage.setItem('boston_travelers_local', JSON.stringify(updatedTravelers))
+    
+    setShowAddForm(false)
+  }
 
   return (
     <div style={{ padding: '16px', backgroundColor: '#ffffff', minHeight: '100%', paddingBottom: '160px' }}>
@@ -13,7 +29,16 @@ export function TravelersPage() {
       <div style={{ height: '2px', backgroundColor: '#ffffff', width: '100%', marginBottom: '16px' }} />
 
       {travelers.length > 0 ? (
-        <TeamTable travelers={travelers} />
+        <>
+          <TeamTable travelers={travelers} onAddClick={() => setShowAddForm(true)} />
+          {showAddForm && (
+            <TravelerEditForm
+              onCancel={() => setShowAddForm(false)}
+              onSave={handleAddTraveler}
+              isAddMode={true}
+            />
+          )}
+        </>
       ) : (
         <div style={{ textAlign: 'center', padding: '32px 16px' }}>
           <p style={{ color: '#666666', marginBottom: '16px' }}>

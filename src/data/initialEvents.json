@@ -6,13 +6,13 @@
     "date": "2026-05-26",
     "time": "3:00 pm",
     "phone": "(866) 753-7121",
+    "nearestStopId": "place-haecl",
     "address": {
       "line1": "306 Congress Street",
       "line2": "BOSTON MA 02210"
     },
     "eventImage": "/assets/bkgrd/tea-party.png",
-    "category": "Museum",
-    "stopId": "place-haecl"
+    "category": "Museum"
   },
   {
     "id": "2",
@@ -21,13 +21,13 @@
     "date": "2026-05-27",
     "time": "11:00 am",
     "phone": "(617) 227-9605",
+    "nearestStopId": "place-pktrm",
     "address": {
       "line1": "84 Beacon St",
       "line2": "BOSTON MA 02108"
     },
     "eventImage": "/assets/bkgrd/cheers.png",
-    "category": "Lunch",
-    "stopId": "place-pktrm"
+    "category": "Lunch"
   },
   {
     "id": "3",
@@ -35,13 +35,13 @@
     "venue": "Freedom Trail",
     "date": "2026-05-27",
     "time": "1:00 pm",
+    "nearestStopId": "place-haecl",
     "address": {
       "line1": "19 N Square",
       "line2": "BOSTON MA 02113"
     },
     "eventImage": "/assets/bkgrd/revere.png",
-    "category": "Museum",
-    "stopId": "place-haecl"
+    "category": "Museum"
   },
   {
     "id": "4",
@@ -49,13 +49,13 @@
     "venue": "Fenway Park",
     "date": "2026-05-27",
     "time": "6:45 pm",
+    "nearestStopId": "place-fenwy",
     "address": {
       "line1": "4 Jersey Street",
       "line2": "BOSTON MA 02115"
     },
     "eventImage": "/assets/bkgrd/boston_braves.png",
-    "category": "Sports",
-    "stopId": "place-fenwy"
+    "category": "Sports"
   },
   {
     "id": "5",
@@ -63,13 +63,13 @@
     "venue": "465 Huntington Ave",
     "date": "2026-05-28",
     "time": "1:00 pm",
+    "nearestStopId": "place-north",
     "address": {
       "line1": "1 Science Park",
       "line2": "BOSTON MA 02114"
     },
     "eventImage": "/assets/bkgrd/duck.png",
-    "category": "Tour",
-    "stopId": "place-north"
+    "category": "Tour"
   },
   {
     "id": "6",
@@ -77,13 +77,13 @@
     "venue": "Boston Commons",
     "date": "2026-05-27",
     "time": "1:00 pm",
+    "nearestStopId": "place-pktrm",
     "address": {
       "line1": "138 Tremont St",
       "line2": "BOSTON MA 02111"
     },
     "eventImage": "/assets/bkgrd/freedom-trail.png",
-    "category": "Tour",
-    "stopId": "place-pktrm"
+    "category": "Tour"
   },
   {
     "id": "7",
@@ -91,13 +91,13 @@
     "venue": "Fenway Park",
     "date": "2026-05-28",
     "time": "4:00 pm",
+    "nearestStopId": "place-fenwy",
     "address": {
       "line1": "4 Jersey Street",
       "line2": "BOSTON MA 02115"
     },
     "eventImage": "/assets/bkgrd/boston_braves.png",
-    "category": "Tour",
-    "stopId": "place-fenwy"
+    "category": "Tour"
   },
   {
     "id": "8",
@@ -106,13 +106,13 @@
     "date": "2026-05-28",
     "time": "10:30 am",
     "phone": "508-771-0107",
+    "nearestStopId": "place-sstat",
     "address": {
       "line1": "180 Ocean St Slip #1",
       "line2": "HYANNIS MA 02601"
     },
     "eventImage": "/assets/bkgrd/van.png",
-    "category": "Tour",
-    "stopId": "place-sstat"
+    "category": "Tour"
   },
   {
     "id": "9",
@@ -121,13 +121,13 @@
     "date": "2026-05-30",
     "time": "11:00 am",
     "phone": "",
+    "nearestStopId": "place-grnst",
     "address": {
       "line1": "29 Germania St Building M",
       "line2": "JAMAICA PLAIN, MA 02130"
     },
     "eventImage": "/assets/bkgrd/sam_adams.png",
-    "category": "Tour",
-    "stopId": "place-grnst"
+    "category": "Tour"
   },
   {
     "id": "10",
@@ -136,12 +136,12 @@
     "date": "2026-05-30",
     "time": "6:00 pm",
     "phone": "",
+    "nearestStopId": "place-sstat",
     "address": {
       "line1": "60 Rowes Wharf",
       "line2": "BOSTON, MA 02110"
     },
     "eventImage": "/assets/bkgrd/harbor.png",
-    "category": "Tour",
-    "stopId": "place-sstat"
+    "category": "Tour"
   }
 ]

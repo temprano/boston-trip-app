@@ -14,6 +14,11 @@ interface WeatherBugProps {
   date?: string
 }
 
+// Convert Celsius to Fahrenheit
+const celsiusToFahrenheit = (celsius: number): number => {
+  return Math.round((celsius * 9/5) + 32)
+}
+
 export function WeatherBug({ date }: WeatherBugProps) {
   const [weather, setWeather] = useState<WeatherData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -28,8 +33,9 @@ export function WeatherBug({ date }: WeatherBugProps) {
         let eventDate = new Date()
         if (date) {
           if (date.includes('-')) {
-            // ISO format: YYYY-MM-DD
-            eventDate = new Date(date)
+            // ISO format: YYYY-MM-DD - parse as local date, not UTC
+            const [year, month, day] = date.split('-').map(Number)
+            eventDate = new Date(year, month - 1, day)
           } else if (date.includes('/')) {
             // MM/DD/YYYY format
             const [month, day, year] = date.split('/').map(Number)
@@ -74,8 +80,8 @@ export function WeatherBug({ date }: WeatherBugProps) {
 
           setWeather({
             dayDate,
-            highTemp: Math.round(highTemp),
-            lowTemp: Math.round(lowTemp),
+            highTemp: celsiusToFahrenheit(highTemp),
+            lowTemp: celsiusToFahrenheit(lowTemp),
             condition,
             icon,
           })
@@ -84,8 +90,8 @@ export function WeatherBug({ date }: WeatherBugProps) {
           const data = await weatherService.getCurrentWeather(42.3601, -71.0589)
           setWeather({
             dayDate,
-            highTemp: Math.round(data.main.temp_max),
-            lowTemp: Math.round(data.main.temp_min),
+            highTemp: celsiusToFahrenheit(data.main.temp_max),
+            lowTemp: celsiusToFahrenheit(data.main.temp_min),
             condition: data.weather[0]?.main || 'Clear',
             icon: data.weather[0]?.icon || '01d',
           })
@@ -174,7 +180,7 @@ export function WeatherBug({ date }: WeatherBugProps) {
     <div className="weather-bug" style={{ display: 'flex', alignItems: 'center', gap: '20px', width: '100%' }}>
       <div className="weather-date" style={{ whiteSpace: 'nowrap', flexShrink: 0, color: '#ffffff' }}>{weather?.dayDate}</div>
       <div className="weather-temps" style={{ whiteSpace: 'nowrap', flex: 1, flexShrink: 0, color: '#ffffff' }}>
-        HI: {weather?.highTemp}° LO: {weather?.lowTemp}°
+        HI: {weather?.highTemp}°F LO: {weather?.lowTemp}°F
       </div>
       <div className="weather-icon" style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         {getWeatherIcon()}

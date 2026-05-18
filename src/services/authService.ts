@@ -23,7 +23,7 @@ export const authService = {
       
       return credential.user
     } catch (error) {
-      throw new Error(`Sign up failed: ${(error as Error).message}`)
+      throw new Error(`Sign up failed: ${(error as Error).message}`, { cause: error })
     }
   },
 
@@ -32,7 +32,7 @@ export const authService = {
       const credential = await signInWithEmailAndPassword(auth, email, password)
       return credential.user
     } catch (error) {
-      throw new Error(`Sign in failed: ${(error as Error).message}`)
+      throw new Error(`Sign in failed: ${(error as Error).message}`, { cause: error })
     }
   },
 
@@ -40,7 +40,7 @@ export const authService = {
     try {
       await signOut(auth)
     } catch (error) {
-      throw new Error(`Logout failed: ${(error as Error).message}`)
+      throw new Error(`Logout failed: ${(error as Error).message}`, { cause: error })
     }
   },
 

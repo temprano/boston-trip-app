@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react'
 import { Traveler } from '../types'
-import { Edit2, Phone, Plane } from 'lucide-react'
+import { Edit2, Phone, Plane, Plus } from 'lucide-react'
 import { TravelerEditForm } from './TravelerEditForm'
 import { localTravelersDataService } from '../services/localTravelersDataService'
 import { useAppStore } from '../store/appStore'
 
 interface TeamTableProps {
   travelers: Traveler[]
+  onAddClick?: () => void
 }
 
-export function TeamTable({ travelers }: TeamTableProps) {
+export function TeamTable({ travelers, onAddClick }: TeamTableProps) {
   const [editingTraveler, setEditingTraveler] = useState<Traveler | null>(null)
   const [localTravelers, setLocalTravelers] = useState<Traveler[]>(travelers)
   const setTravelersInStore = useAppStore((state) => state.setTravelers)
@@ -42,9 +43,43 @@ export function TeamTable({ travelers }: TeamTableProps) {
     <>
       <div className="space-y-6">
         <div>
-          <h1 style={{ fontSize: 'clamp(28px, 8vw, 44px)', fontWeight: 'bold', marginBottom: '12px', color: '#000000' }}>
-            MEET THE TEAM
-          </h1>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+            <h1 style={{ fontSize: 'clamp(28px, 8vw, 44px)', fontWeight: 'bold', margin: 0, color: '#000000' }}>
+              MEET THE TEAM
+            </h1>
+            <button
+              onClick={onAddClick}
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#000000',
+                opacity: 0.7,
+                transition: 'opacity 0.2s',
+              }}
+              onMouseEnter={e => (e.currentTarget.style.opacity = '1')}
+              onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}
+              aria-label="Add new team member"
+            >
+              <div
+                style={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '50%',
+                  border: '2px solid #000000',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Plus size={20} />
+              </div>
+            </button>
+          </div>
           <div style={{ height: '2px', backgroundColor: '#000000', width: '100%' }} />
         </div>
 

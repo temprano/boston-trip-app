@@ -1,7 +1,12 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider, useSearchParams } from 'react-router-dom'
 import { MainLayout } from '../layouts'
 import { ItineraryPage, DayViewPage, TravelersPage, SettingsPage, MBTATransit } from '../pages'
-
+function MBTATransitWrapper() {
+  const [searchParams] = useSearchParams()
+  const defaultStopId = searchParams.get('stop') ?? undefined
+  console.log('MBTATransit defaultStopId:', defaultStopId)
+  return <MBTATransit defaultStopId={defaultStopId} />
+}
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -25,7 +30,7 @@ export const router = createBrowserRouter([
       },
       {
         path: '/transit',
-        element: <MBTATransit />,
+        element: <MBTATransitWrapper />,
       },
     ],
   },

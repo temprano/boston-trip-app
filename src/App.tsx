@@ -3,6 +3,7 @@ import { Router } from './router'
 import { useAppStore } from './store'
 import { eventDataService } from './services/eventDataService'
 import { localTravelersDataService } from './services/localTravelersDataService'
+import { syncLocalEventsToFirebaseOnce } from './services/syncLocalEventsToFirebase'
 import initialTravelers from './data/initialTravelers.json'
 import initialEvents from './data/initialEvents.json'
 import initialItineraryData from './data/initialItinerary.json'
@@ -68,7 +69,58 @@ function App() {
         const savedEvents = localStorage.getItem('boston_events_local')
         if (savedEvents) {
           console.log('[App] Found existing events in localStorage, using those')
-          const parsed = JSON.parse(savedEvents)
+          let parsed = JSON.parse(savedEvents)
+          
+          // Migration: ensure ALL events have nearestStopId from initialEvents
+          let needsUpdate = false
+          parsed = parsed.map((event: any) => {
+            // If event already has nearestStopId, keep it
+            if (event.nearestStopId) {
+              // Clean up any old fields
+              if (event.stopId || event.stop) {
+                needsUpdate = true
+                return {
+                  ...event,
+                  stop: undefined,
+                  stopId: undefined,
+                }
+              }
+              return event
+            }
+            
+            // Event missing nearestStopId - look it up from initialEvents
+            const initialEvent = initialEvents.find((e: any) => e.id === event.id)
+            if (initialEvent && initialEvent.nearestStopId) {
+              console.log('[App] Adding nearestStopId to event', event.id, ':', initialEvent.nearestStopId)
+              needsUpdate = true
+              return {
+                ...event,
+                nearestStopId: initialEvent.nearestStopId,
+                stop: undefined,
+                stopId: undefined,
+              }
+            }
+            
+            // Fallback: convert old stopId/stop field if present
+            if (event.stopId || event.stop) {
+              console.log('[App] Migrating event', event.id, 'from old stopId/stop field')
+              needsUpdate = true
+              return {
+                ...event,
+                nearestStopId: event.stop || event.stopId,
+                stop: undefined,
+                stopId: undefined,
+              }
+            }
+            
+            return event
+          })
+          
+          if (needsUpdate) {
+            console.log('[App] Events migrated, saving updated data to localStorage')
+            localStorage.setItem('boston_events_local', JSON.stringify(parsed))
+          }
+          
           useAppStore.getState().setEvents(parsed)
         } else {
           console.log('[App] No events in localStorage, seeding with initial data')
@@ -114,6 +166,11 @@ function App() {
         console.log('[App] Initializing Firebase sync with itinerary ID:', itineraryToUse.id)
         eventDataService.initializeSync(itineraryToUse.id)
         console.log('[App] ✓ Firebase sync initialized')
+
+        // One-time sync: push local events with nearestStopId up to Firebase
+        console.log('[App] Starting one-time sync of local events to Firebase...')
+        await syncLocalEventsToFirebaseOnce(itineraryToUse.id)
+        console.log('[App] ✓ One-time Firebase sync complete')
         
         console.log('[App] ✓ All initialization complete')
       } catch (err) {

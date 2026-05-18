@@ -3,13 +3,33 @@ import { Traveler } from '../types'
 import { X } from 'lucide-react'
 
 interface TravelerEditFormProps {
-  traveler: Traveler
+  traveler?: Traveler
   onSave: (traveler: Traveler) => void
   onCancel: () => void
+  isAddMode?: boolean
 }
 
-export function TravelerEditForm({ traveler, onSave, onCancel }: TravelerEditFormProps) {
-  const [formData, setFormData] = useState<Traveler>(traveler)
+const createBlankTraveler = (): Traveler => ({
+  id: `traveler-${Date.now()}`,
+  name: '',
+  role: 'guest',
+  avatar: '',
+  contact: {
+    email: '',
+    phone: '',
+  },
+  flightInfo: {
+    arrivalAirline: '',
+    arrivalFlightNumber: '',
+    arrivalTime: '',
+    departureAirline: '',
+    departureFlightNumber: '',
+    departureTime: '',
+  },
+})
+
+export function TravelerEditForm({ traveler, onSave, onCancel, isAddMode = false }: TravelerEditFormProps) {
+  const [formData, setFormData] = useState<Traveler>(traveler || createBlankTraveler())
 
   const handleInputChange = (field: keyof Traveler, value: any) => {
     setFormData((prev) => ({
@@ -18,7 +38,7 @@ export function TravelerEditForm({ traveler, onSave, onCancel }: TravelerEditFor
     }))
   }
 
-  const handleContactChange = (field: keyof typeof traveler.contact, value: string) => {
+  const handleContactChange = (field: keyof Traveler['contact'], value: string) => {
     setFormData((prev) => ({
       ...prev,
       contact: {
@@ -74,7 +94,9 @@ export function TravelerEditForm({ traveler, onSave, onCancel }: TravelerEditFor
       >
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-          <h2 style={{ margin: 0, fontSize: '20px', color: '#000000' }}>Edit {formData.name}</h2>
+          <h2 style={{ margin: 0, fontSize: '20px', color: '#000000' }}>
+            {isAddMode ? 'Add Team Member' : `Edit ${formData.name}`}
+          </h2>
           <button
             onClick={onCancel}
             style={{
@@ -111,6 +133,30 @@ export function TravelerEditForm({ traveler, onSave, onCancel }: TravelerEditFor
                 boxSizing: 'border-box',
               }}
             />
+          </div>
+
+          {/* Role */}
+          <div>
+            <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', color: '#333333', fontWeight: 'bold' }}>
+              Role
+            </label>
+            <select
+              value={formData.role || 'guest'}
+              onChange={(e) => handleInputChange('role', e.target.value)}
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                backgroundColor: '#f5f5f5',
+                border: '1px solid #cccccc',
+                borderRadius: '4px',
+                color: '#000000',
+                fontSize: '14px',
+                boxSizing: 'border-box',
+              }}
+            >
+              <option value="guest">Guest</option>
+              <option value="organizer">Organizer</option>
+            </select>
           </div>
 
           {/* Email */}
@@ -332,7 +378,7 @@ export function TravelerEditForm({ traveler, onSave, onCancel }: TravelerEditFor
                 fontWeight: 'bold',
               }}
             >
-              Save Changes
+              {isAddMode ? 'Add Team Member' : 'Save Changes'}
             </button>
           </div>
         </form>

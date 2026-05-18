@@ -1,31 +1,68 @@
 import { useState, useEffect } from 'react'
 import { Event } from '../types'
 
+// MBTA Quick Stops for nearestStopId selection
+const QUICK_STOPS = [
+  { id: 'place-DB-2249', name: 'Four Corners/Geneva' },
+  { id: 'place-pktrm', name: 'Park Street' },
+  { id: 'place-spmnl', name: 'Science Park/West End' },
+  { id: 'place-chmnl', name: 'Charles/MGH' },
+  { id: 'place-haecl', name: 'Haymarket' },
+  { id: 'place-grnst', name: 'Green Street' },
+  { id: 'place-fenwy', name: 'Fenway' },
+  { id: 'place-sstat', name: 'South Station' },
+  { id: 'place-north', name: 'North Station' },
+  { id: 'place-bomnl', name: 'Boylston' },
+  { id: 'place-dwnxg', name: 'Downtown Crossing' },
+  { id: 'place-knncl', name: 'Kendall/MIT' },
+]
+
 interface EditEventFormProps {
-  event: Event
+  event?: Event
   isOpen: boolean
   onClose: () => void
   onSave: (updatedEvent: Event) => Promise<void>
+  isAddMode?: boolean
 }
 
-export function EditEventForm({ event, isOpen, onClose, onSave }: EditEventFormProps) {
-  const [formData, setFormData] = useState<Event>({
+const createBlankEvent = (): Event => ({
+  id: `event-${Date.now()}`,
+  title: '',
+  venue: '',
+  date: '',
+  time: '',
+  phone: '',
+  nearestStopId: '',
+  address: {
+    line1: '',
+    line2: '',
+  },
+  eventImage: '',
+  category: '',
+})
+
+export function EditEventForm({ event, isOpen, onClose, onSave, isAddMode = false }: EditEventFormProps) {
+  const [formData, setFormData] = useState<Event>(event ? {
     ...event,
     phone: event.phone || '',
-  })
+  } : createBlankEvent())
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   // Reset form data when event changes or form opens
   useEffect(() => {
     if (isOpen) {
-      setFormData({
-        ...event,
-        phone: event.phone || '',
-      })
+      if (isAddMode) {
+        setFormData(createBlankEvent())
+      } else if (event) {
+        setFormData({
+          ...event,
+          phone: event.phone || '',
+        })
+      }
       setError(null)
     }
-  }, [event, isOpen])
+  }, [event, isOpen, isAddMode])
 
   const handleInputChange = (field: string, value: string) => {
     if (field.startsWith('address.')) {
@@ -121,7 +158,7 @@ export function EditEventForm({ event, isOpen, onClose, onSave }: EditEventFormP
               textTransform: 'uppercase',
             }}
           >
-            Edit Event
+            {isAddMode ? 'Add Event' : 'Edit Event'}
           </h2>
         </div>
 
@@ -249,6 +286,35 @@ export function EditEventForm({ event, isOpen, onClose, onSave }: EditEventFormP
                 fontFamily: 'inherit',
               }}
             />
+          </div>
+
+          {/* Nearest Stop ID (for Transit) */}
+          <div>
+            <label style={{ display: 'block', fontSize: '14px', fontWeight: 'bold', color: '#000', marginBottom: '6px' }}>
+              Nearest Transit Stop
+            </label>
+            <select
+              value={formData.nearestStopId || ''}
+              onChange={e => handleInputChange('nearestStopId', e.target.value)}
+              style={{
+                width: '100%',
+                boxSizing: 'border-box',
+                padding: '10px 12px',
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+                fontSize: '14px',
+                fontFamily: 'inherit',
+                backgroundColor: '#fff',
+                cursor: 'pointer',
+              }}
+            >
+              <option value="">-- Select a stop (optional) --</option>
+              {QUICK_STOPS.map(stop => (
+                <option key={stop.id} value={stop.id}>
+                  {stop.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           {/* Address Line 1 */}
