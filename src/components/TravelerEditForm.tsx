@@ -4,7 +4,7 @@ import { X } from 'lucide-react'
 
 interface TravelerEditFormProps {
   traveler?: Traveler
-  onSave: (traveler: Traveler) => void
+  onSave: (traveler: Traveler) => Promise<void> | void
   onCancel: () => void
   isAddMode?: boolean
 }
@@ -30,6 +30,8 @@ const createBlankTraveler = (): Traveler => ({
 
 export function TravelerEditForm({ traveler, onSave, onCancel, isAddMode = false }: TravelerEditFormProps) {
   const [formData, setFormData] = useState<Traveler>(traveler || createBlankTraveler())
+  const [isSaving, setIsSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleInputChange = (field: keyof Traveler, value: any) => {
     setFormData((prev) => ({
@@ -58,9 +60,25 @@ export function TravelerEditForm({ traveler, onSave, onCancel, isAddMode = false
     })) as any
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    onSave(formData)
+    
+    // Validate name is required
+    if (!formData.name.trim()) {
+      setError('Name is required')
+      return
+    }
+    
+    try {
+      setError(null)
+      setIsSaving(true)
+      await onSave(formData)
+      // onCancel will be called by parent when state updates
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save traveler')
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   return (
@@ -110,6 +128,21 @@ export function TravelerEditForm({ traveler, onSave, onCancel, isAddMode = false
             <X size={24} />
           </button>
         </div>
+
+        {/* Error Message */}
+        {error && (
+          <div style={{
+            padding: '12px',
+            backgroundColor: '#ffebee',
+            border: '1px solid #ef5350',
+            borderRadius: '4px',
+            marginBottom: '16px',
+            color: '#c62828',
+            fontSize: '14px',
+          }}>
+            {error}
+          </div>
+        )}
 
         {/* Form */}
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -366,19 +399,21 @@ export function TravelerEditForm({ traveler, onSave, onCancel, isAddMode = false
             </button>
             <button
               type="submit"
+              disabled={isSaving}
               style={{
                 flex: 1,
                 padding: '10px 16px',
-                backgroundColor: '#2255cc',
+                backgroundColor: isSaving ? '#9ca3af' : '#2255cc',
                 border: 'none',
                 borderRadius: '4px',
                 color: '#ffffff',
-                cursor: 'pointer',
+                cursor: isSaving ? 'not-allowed' : 'pointer',
                 fontSize: '14px',
                 fontWeight: 'bold',
+                opacity: isSaving ? 0.7 : 1,
               }}
             >
-              {isAddMode ? 'Add Team Member' : 'Save Changes'}
+              {isSaving ? 'Saving...' : (isAddMode ? 'Add Team Member' : 'Save Changes')}
             </button>
           </div>
         </form>
