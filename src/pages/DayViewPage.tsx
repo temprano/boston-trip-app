@@ -4,8 +4,9 @@ import { DayEventsGroup } from '../components/DayEventsGroup'
 import { EventInfoPanel } from '../components/EventInfoPanel'
 import { EditEventForm } from '../components/EditEventForm'
 import { useAppStore } from '../store/appStore'
-import { Plus } from 'lucide-react'
+import { Plus, Loader } from 'lucide-react'
 import { firebaseSyncService } from '../services/firebaseSyncService'
+import { usePullToRefresh } from '../hooks/usePullToRefresh'
 
 export function DayViewPage() {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
@@ -50,6 +51,25 @@ export function DayViewPage() {
     setSelectedEvent(null)
     setInfoType(null)
   }
+
+  const handleRefresh = async () => {
+    if (!currentItinerary?.id) {
+      console.log('[DayViewPage] No itinerary, skipping refresh')
+      return
+    }
+    console.log('[DayViewPage] Pull-to-refresh triggered, fetching events from Firebase...')
+    try {
+      await firebaseSyncService.pullEventsFromFirebase(currentItinerary.id)
+      console.log('[DayViewPage] ✓ Events refreshed from Firebase')
+    } catch (error) {
+      console.error('[DayViewPage] Failed to refresh events:', error)
+    }
+  }
+
+  const { containerRef, isRefreshing } = usePullToRefresh({
+    onRefresh: handleRefresh,
+    threshold: 80,
+  })
 
   const handleAddEvent = async (newEvent: Event) => {
     // Add to local state
@@ -142,12 +162,30 @@ export function DayViewPage() {
       </div>
 
       {/* Events Container - Scrollable */}
-      <div style={{ 
-        padding: '12px 16px 16px 16px',
-        flex: 1,
-        overflowY: 'auto',
-        overflowX: 'hidden'
-      }}>
+      <div
+        ref={containerRef}
+        style={{ 
+          padding: '12px 16px 16px 16px',
+          flex: 1,
+          overflowY: 'auto',
+          overflowX: 'hidden'
+        }}
+      >
+        {isRefreshing && (
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            padding: '16px',
+            marginBottom: '16px',
+            backgroundColor: '#f0f0f0',
+            borderRadius: '8px',
+          }}>
+            <Loader size={16} style={{ animation: 'spin 1s linear infinite' }} />
+            <span style={{ color: '#666666' }}>Refreshing events...</span>
+          </div>
+        )}
         <div
           style={{
             display: 'flex',

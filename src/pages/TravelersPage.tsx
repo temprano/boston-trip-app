@@ -4,11 +4,33 @@ import { TeamTable } from '../components/TeamTable'
 import { Traveler } from '../types'
 import { TravelerEditForm } from '../components/TravelerEditForm'
 import { travelersDataService } from '../services/travelersDataService'
+import { firebaseTravelersSyncService } from '../services/firebaseTravelersSync'
+import { usePullToRefresh } from '../hooks/usePullToRefresh'
+import { Loader } from 'lucide-react'
 
 export function TravelersPage() {
   const travelers = useAppStore((state) => state.travelers)
   const currentItinerary = useAppStore((state) => state.currentItinerary)
   const [showAddForm, setShowAddForm] = useState(false)
+
+  const handleRefresh = async () => {
+    if (!currentItinerary?.id) {
+      console.log('[TravelersPage] No itinerary, skipping refresh')
+      return
+    }
+    console.log('[TravelersPage] Pull-to-refresh triggered, fetching travelers from Firebase...')
+    try {
+      await firebaseTravelersSyncService.pullTravelersFromFirebase(currentItinerary.id)
+      console.log('[TravelersPage] ✓ Travelers refreshed from Firebase')
+    } catch (error) {
+      console.error('[TravelersPage] Failed to refresh travelers:', error)
+    }
+  }
+
+  const { containerRef, isRefreshing } = usePullToRefresh({
+    onRefresh: handleRefresh,
+    threshold: 80,
+  })
 
   const handleAddTraveler = async (newTraveler: Traveler) => {
     if (!currentItinerary?.id) {
@@ -24,7 +46,25 @@ export function TravelersPage() {
   }
 
   return (
-    <div style={{ padding: '16px', backgroundColor: '#ffffff', minHeight: '100%', paddingBottom: '160px' }}>
+    <div
+      ref={containerRef}
+      style={{ padding: '16px', backgroundColor: '#ffffff', minHeight: '100%', paddingBottom: '160px', overflowY: 'auto' }}
+    >
+      {isRefreshing && (
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '8px',
+          padding: '16px',
+          marginBottom: '16px',
+          backgroundColor: '#f0f0f0',
+          borderRadius: '8px',
+        }}>
+          <Loader size={16} style={{ animation: 'spin 1s linear infinite' }} />
+          <span style={{ color: '#666666' }}>Refreshing team...</span>
+        </div>
+      )}
       {/* MEET THE TEAM Header */}
       {/* <h1 style={{ fontSize: 'clamp(20px, 6vw, 28px)', fontWeight: 'bold', marginBottom: '6px', color: '#ffffff', backgroundColor: '#000000', padding: '6px 10px', borderRadius: '4px', display: 'inline-block', letterSpacing: '-1.68px' }}>
         MEET THE TEAM
