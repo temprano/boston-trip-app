@@ -40,7 +40,7 @@ class FirebaseTravelersSyncService {
     console.log('[firebaseTravelersSyncService] Setting up new subscription...')
     
     try {
-      const travelersRef = collection(db, `itineraries/${itineraryId}/travelers`)
+      const travelersRef = collection(db, 'travelers')
       console.log('[firebaseTravelersSyncService] Travelers ref created:', travelersRef.path)
       
       const unsubscribe = onSnapshot(
@@ -98,7 +98,7 @@ class FirebaseTravelersSyncService {
   /**
    * Sync a single traveler to Firebase
    */
-  async syncTravelerToFirebase(itineraryId: string, traveler: Traveler): Promise<void> {
+  async syncTravelerToFirebase(_itineraryId: string, traveler: Traveler): Promise<void> {
     console.log('[firebaseTravelersSyncService] syncTravelerToFirebase called:', traveler.id)
     
     if (!db) {
@@ -107,7 +107,7 @@ class FirebaseTravelersSyncService {
     }
 
     try {
-      const travelerRef = doc(db, `itineraries/${itineraryId}/travelers`, traveler.id)
+      const travelerRef = doc(db, 'travelers', traveler.id)
       await setDoc(travelerRef, traveler, { merge: true })
       console.log('[firebaseTravelersSyncService] ✓ Traveler synced to Firebase:', traveler.id)
     } catch (error) {
@@ -119,7 +119,7 @@ class FirebaseTravelersSyncService {
   /**
    * Sync multiple travelers to Firebase
    */
-  async syncTravelersToFirebase(itineraryId: string, travelers: Traveler[]): Promise<void> {
+  async syncTravelersToFirebase(_itineraryId: string, travelers: Traveler[]): Promise<void> {
     console.log('[firebaseTravelersSyncService] syncTravelersToFirebase called with', travelers.length, 'travelers')
     
     if (!db) {
@@ -129,7 +129,7 @@ class FirebaseTravelersSyncService {
 
     try {
       for (const traveler of travelers) {
-        const travelerRef = doc(db, `itineraries/${itineraryId}/travelers`, traveler.id)
+        const travelerRef = doc(db, 'travelers', traveler.id)
         await setDoc(travelerRef, traveler, { merge: true })
       }
       console.log('[firebaseTravelersSyncService] ✓ All travelers synced to Firebase')
@@ -171,7 +171,7 @@ class FirebaseTravelersSyncService {
     }
     
     try {
-      const travelersRef = collection(db, `itineraries/${itineraryId}/travelers`)
+      const travelersRef = collection(db, 'travelers')
       console.log('[firebaseTravelersSyncService] Fetching travelers from:', travelersRef.path)
       
       const snapshot = await getDocs(travelersRef)
@@ -212,11 +212,11 @@ class FirebaseTravelersSyncService {
   /**
    * Delete a traveler from Firebase
    */
-  async deleteTravelerFromFirebase(itineraryId: string, travelerId: string): Promise<void> {
+  async deleteTravelerFromFirebase(_itineraryId: string, travelerId: string): Promise<void> {
     if (!db) return // Firebase not configured
     
     try {
-      const travelerRef = doc(db, `itineraries/${itineraryId}/travelers`, travelerId)
+      const travelerRef = doc(db, 'travelers', travelerId)
       await deleteDoc(travelerRef)
       console.log('[firebaseTravelersSyncService] ✓ Traveler deleted from Firebase:', travelerId)
     } catch (error) {
