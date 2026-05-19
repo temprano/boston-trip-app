@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { GoogleMap, Marker, InfoWindow } from '@react-google-maps/api'
+import { GoogleMap, Marker, InfoWindow, useLoadScript } from '@react-google-maps/api'
 import { Event, GooglePlace, MapFilters, MapMarkerColors } from '../types'
 import { googlePlacesService } from '../services/googlePlacesService'
 
@@ -16,7 +16,16 @@ const MARKER_COLORS: MapMarkerColors = {
   event: '#2255CC',
 }
 
+// Google Maps API Key from environment
+const GOOGLE_MAPS_API_KEY = 'AIzaSyDD1boADglPCZKL_ZaSs0a2zCKHUV5H8dc'
+
 export function GoogleMapComponent({ event }: GoogleMapComponentProps) {
+  // Load Google Maps script with proper async loading
+  const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: GOOGLE_MAPS_API_KEY,
+    libraries: ['places'],
+  })
+
   const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number } | null>(null)
   const [places, setPlaces] = useState<GooglePlace[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -92,10 +101,18 @@ export function GoogleMapComponent({ event }: GoogleMapComponentProps) {
     }))
   }
 
-  if (error) {
+  if (loadError) {
     return (
       <div style={{ padding: '16px', color: '#d32f2f', textAlign: 'center' }}>
-        <p>Error loading map: {error}</p>
+        <p>Error loading Google Maps: {loadError.message}</p>
+      </div>
+    )
+  }
+
+  if (!isLoaded || error) {
+    return (
+      <div style={{ padding: '16px', textAlign: 'center', color: '#666666' }}>
+        <p>{error ? `Error loading map: ${error}` : 'Loading map and nearby places...'}</p>
       </div>
     )
   }
