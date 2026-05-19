@@ -3,6 +3,7 @@ import { Router } from './router'
 import { useAppStore } from './store'
 import { eventDataService } from './services/eventDataService'
 import { travelersDataService } from './services/travelersDataService'
+import { baseAddressSyncService } from './services/baseAddressSyncService'
 import { localTravelersDataService } from './services/localTravelersDataService'
 import { syncLocalEventsToFirebaseOnce } from './services/syncLocalEventsToFirebase'
 import initialTravelers from './data/initialTravelers.json'
@@ -167,6 +168,23 @@ function App() {
         console.log('[App] Initializing Firebase sync with itinerary ID:', itineraryToUse.id)
         eventDataService.initializeSync(itineraryToUse.id)
         await travelersDataService.initializeSync(itineraryToUse.id)
+        
+        // Pull base address from Firebase (if available)
+        console.log('[App] Pulling base address from Firebase...')
+        const firebaseBaseAddress = await baseAddressSyncService.pullBaseAddressFromFirebase(itineraryToUse.id)
+        if (firebaseBaseAddress) {
+          console.log('[App] ✓ Base address found in Firebase:', firebaseBaseAddress)
+          useAppStore.getState().setBaseAddress(firebaseBaseAddress)
+        } else {
+          console.log('[App] No base address in Firebase, using local value:', useAppStore.getState().baseAddress)
+        }
+        
+        // Subscribe to real-time base address updates
+        baseAddressSyncService.subscribeToBaseAddressSync(itineraryToUse.id, (address) => {
+          console.log('[App] Base address updated from Firebase:', address)
+          useAppStore.getState().setBaseAddress(address)
+        })
+        
         console.log('[App] ✓ Firebase sync initialized')
 
         // One-time sync: push local events with nearestStopId up to Firebase

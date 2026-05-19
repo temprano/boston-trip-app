@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useAppStore } from '../store'
 import { QrCode, X, MapPin, AlertCircle, CheckCircle } from 'lucide-react'
 import { locationService } from '../services/locationService'
+import { baseAddressSyncService } from '../services/baseAddressSyncService'
 
 export function SettingsPage() {
   const [showQR, setShowQR] = useState(false)
@@ -16,6 +17,7 @@ export function SettingsPage() {
   const setBaseAddress = useAppStore((state) => state.setBaseAddress)
   const userLocation = useAppStore((state) => state.userLocation)
   const setUserLocation = useAppStore((state) => state.setUserLocation)
+  const currentItinerary = useAppStore((state) => state.currentItinerary)
 
   // Check initial location permission status
   useEffect(() => {
@@ -319,6 +321,14 @@ export function SettingsPage() {
               setBaseAddress(addressToSave)
               localStorage.setItem('baseAddress', addressToSave)
               setAddressInput('')
+              
+              // Sync to Firebase if itinerary is available
+              if (currentItinerary?.id) {
+                console.log('[SettingsPage] Syncing base address to Firebase...')
+                baseAddressSyncService.syncBaseAddressToFirebase(currentItinerary.id, addressToSave).catch((error) => {
+                  console.error('[SettingsPage] Failed to sync base address:', error)
+                })
+              }
             }}
             className="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
           >
