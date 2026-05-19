@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { getFirestore } from 'firebase/firestore'
+import { initializeFirestore } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
 // import { getAuth } from 'firebase/auth'  // Not used in app
 
@@ -41,15 +41,18 @@ try {
     app = initializeApp(firebaseConfig)
     console.log('[Firebase] App initialized:', app.name)
     
-    console.log('[Firebase] Getting Firestore...')
-    db = getFirestore(app)
+    console.log('[Firebase] Getting Firestore with QUIC disabled...')
+    // Disable QUIC by using experimentalForceLongPolling to avoid protocol errors
+    db = initializeFirestore(app, {
+      experimentalForceLongPolling: true,
+    })
     console.log('[Firebase] Firestore initialized:', !!db)
     
     console.log('[Firebase] Getting Storage...')
     storage = getStorage(app)
     console.log('[Firebase] Storage initialized:', !!storage)
 
-    console.log('[Firebase] ✓ Firebase initialization complete - using real Firestore database')
+    console.log('[Firebase] ✓ Firebase initialization complete - using HTTP long polling (no QUIC)')
   } else {
     console.log('[Firebase] Not configured, using offline mode')
     // Create dummy objects so imports don't break
