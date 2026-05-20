@@ -28,19 +28,9 @@ interface EditEventFormProps {
 }
 
 const getNextEventId = (): string => {
-  const events = localEventsDataService.getEvents()
-  if (events.length === 0) return '1'
-  
-  // Find the max numeric ID
-  const numericIds = events
-    .map(e => {
-      const match = e.id.match(/^(\d+)$/) || e.id.match(/^event[_-](\d+)/)
-      return match ? parseInt(match[1], 10) : 0
-    })
-    .filter(id => id > 0)
-  
-  const maxId = numericIds.length > 0 ? Math.max(...numericIds) : 0
-  return String(maxId + 1)
+  // Use a simple UUID-style ID to avoid all collision issues
+  // Format: random 8-char hex string
+  return 'evt_' + Math.random().toString(16).substring(2, 10)
 }
 
 const createBlankEvent = (): Event => ({

@@ -83,8 +83,9 @@ export function DayViewPage() {
     }
     console.log('[DayViewPage] Pull-to-refresh triggered, fetching events from Firebase...')
     try {
-      await firebaseSyncService.pullEventsFromFirebase(currentItinerary.id)
-      console.log('[DayViewPage] ✓ Events refreshed from Firebase')
+      const refreshedEvents = await firebaseSyncService.pullEventsFromFirebase(currentItinerary.id)
+      setEvents(refreshedEvents)
+      console.log('[DayViewPage] ✓ Events refreshed from Firebase:', refreshedEvents.length, 'events')
     } catch (error) {
       console.error('[DayViewPage] Failed to refresh events:', error)
     }

@@ -8,6 +8,7 @@ import {
 } from 'firebase/firestore'
 import { db } from './firebase'
 import { Event } from '../types'
+import { useAppStore } from '../store/appStore'
 import { localEventsDataService } from './localEventsDataService'
 
 /**
@@ -18,11 +19,14 @@ import { localEventsDataService } from './localEventsDataService'
  * 2. Firebase = Sync layer (broadcasts changes to other users)
  * 3. When local data changes → save to localStorage → sync to Firebase
  * 4. When Firebase updates arrive → merge into localStorage
+ * 5. Deletions are tracked in 'deletions' collection to prevent resurrection
  */
 
 class FirebaseSyncService {
   private unsubscribers: (() => void)[] = []
   private syncInitialized = false
+  private deletionsSyncInitialized = false
+  private remoteDeletedEventIds: Set<string> = new Set()
 
   /**
    * Initialize real-time sync for events
@@ -49,7 +53,11 @@ class FirebaseSyncService {
     this.syncInitialized = true
     console.log('[firebaseSyncService] Setting up new subscription...')
     
+    // Also subscribe to deletions collection
+    this.subscribeToDeletions()
+    
     try {
+      // Subscribe to events collection
       const eventsRef = collection(db, 'events')
       console.log('[firebaseSyncService] Events ref created:', eventsRef.path)
       
@@ -65,7 +73,15 @@ class FirebaseSyncService {
             })) as Event[]
 
             // Merge remote events with local, keeping local as primary
-            localEventsDataService.mergeRemoteEvents(remoteEvents)
+            // Pass remote deleted event IDs to prevent re-adding deleted events
+            const mergedEvents = localEventsDataService.mergeRemoteEvents(remoteEvents, this.remoteDeletedEventIds)
+            
+            // Save merged events to localStorage
+            localStorage.setItem('boston_events_local', JSON.stringify(mergedEvents))
+            
+            // Update app state with merged events
+            useAppStore.getState().setEvents(mergedEvents)
+            console.log('[firebaseSyncService] ✓ Events updated in store:', mergedEvents.length, 'events')
           } catch (error) {
             console.error('Error processing Firebase snapshot:', error)
           }
@@ -82,6 +98,43 @@ class FirebaseSyncService {
       console.debug('Firebase sync not available:', error)
       // Return no-op if subscription fails
       return () => {}
+    }
+  }
+
+  /**
+   * Subscribe to deletions collection to track deleted events across all users
+   */
+  private subscribeToDeletions(): void {
+    if (!db || this.deletionsSyncInitialized) return
+
+    this.deletionsSyncInitialized = true
+    console.log('[firebaseSyncService] Subscribing to deletions collection for real-time deletion tracking...')
+
+    try {
+      const deletionsRef = collection(db, 'deletions')
+      
+      const unsubscribe = onSnapshot(
+        deletionsRef,
+        (snapshot) => {
+          try {
+            console.log('[firebaseSyncService] Received deletions snapshot with', snapshot.docs.length, 'deletions')
+            this.remoteDeletedEventIds.clear()
+            snapshot.docs.forEach((doc) => {
+              this.remoteDeletedEventIds.add(doc.data().eventId)
+            })
+            console.log('[firebaseSyncService] Updated remote deleted event IDs:', Array.from(this.remoteDeletedEventIds))
+          } catch (error) {
+            console.error('[firebaseSyncService] Error processing deletions snapshot:', error)
+          }
+        },
+        (error) => {
+          console.debug('[firebaseSyncService] Deletions subscription error:', error)
+        }
+      )
+
+      this.unsubscribers.push(unsubscribe)
+    } catch (error) {
+      console.debug('[firebaseSyncService] Failed to subscribe to deletions:', error)
     }
   }
 
@@ -139,21 +192,29 @@ class FirebaseSyncService {
     
     try {
       const eventsRef = collection(db, 'events')
-      console.log('[firebaseSyncService] Fetching events from:', eventsRef.path)
+      const deletionsRef = collection(db, 'deletions')
       
-      const snapshot = await getDocs(eventsRef)
-      console.log('[firebaseSyncService] Received', snapshot.docs.length, 'events from Firebase')
+      console.log('[firebaseSyncService] Fetching events and deletions from Firebase...')
+      const [eventsSnapshot, deletionsSnapshot] = await Promise.all([
+        getDocs(eventsRef),
+        getDocs(deletionsRef),
+      ])
+
+      console.log('[firebaseSyncService] Received', eventsSnapshot.docs.length, 'events and', deletionsSnapshot.docs.length, 'deletions')
       
-      const remoteEvents = snapshot.docs.map((doc) => ({
+      const remoteEvents = eventsSnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       })) as Event[]
 
-      console.log('[firebaseSyncService] Remote events:', remoteEvents.length)
+      // Build set of deleted event IDs from Firebase
+      const deletedEventIds = new Set(
+        deletionsSnapshot.docs.map((doc) => doc.data().eventId)
+      )
 
-      // Merge with local
-      const merged = localEventsDataService.mergeRemoteEvents(remoteEvents)
-      console.log('[firebaseSyncService] Merged events (local + remote):', merged.length)
+      // Merge with local deletion log + remote deletions
+      const merged = localEventsDataService.mergeRemoteEvents(remoteEvents, deletedEventIds)
+      console.log('[firebaseSyncService] Merged events (local + remote), deleted:', deletedEventIds.size)
       return merged
     } catch (error) {
       console.error('[firebaseSyncService] Firebase pull failed:', error)
@@ -168,15 +229,42 @@ class FirebaseSyncService {
    * Delete an event from Firebase
    */
   async deleteEventFromFirebase(_itineraryId: string, eventId: string): Promise<void> {
-    if (!db) return // Firebase not configured
+    console.log('[firebaseSyncService] deleteEventFromFirebase called for event:', eventId)
+    console.log('[firebaseSyncService] Firebase initialized?', !!db)
+    
+    if (!db) {
+      console.error('[firebaseSyncService] ❌ Firebase not initialized (db is null), cannot delete')
+      return
+    }
     
     try {
+      console.log('[firebaseSyncService] Step 1: Deleting from events collection...')
       const eventRef = doc(db, 'events', eventId)
+      console.log('[firebaseSyncService] Event ref path:', eventRef.path)
       await deleteDoc(eventRef)
-      console.log('[firebaseSyncService] ✓ Event deleted from Firebase:', eventId)
+      console.log('[firebaseSyncService] ✓ Step 1 complete: Event deleted from Firebase')
+      
+      console.log('[firebaseSyncService] Step 2: Writing deletion record to deletions collection...')
+      const deletionRef = doc(db, 'deletions', eventId)
+      try {
+        await setDoc(deletionRef, {
+          eventId,
+          deletedAt: new Date().toISOString(),
+        }, { merge: true })
+        console.log('[firebaseSyncService] ✓ Step 2 complete: Deletion record logged to Firebase')
+      } catch (deletionError) {
+        console.warn('[firebaseSyncService] ⚠ Step 2 failed (non-critical):', (deletionError as any).code)
+        console.warn('[firebaseSyncService] Event deleted locally, deletion tracking degraded')
+      }
+      
+      console.log('[firebaseSyncService] Step 3: Updating local deletion log...')
+      localEventsDataService.clearDeletionLog(eventId)
+      console.log('[firebaseSyncService] ✓ Step 3 complete: Event successfully deleted (synced to Firebase)')
     } catch (error) {
-      console.error('[firebaseSyncService] Firebase delete failed:', error)
-      // Don't throw - delete failures shouldn't break local operations
+      console.error('[firebaseSyncService] ❌ Firebase delete failed:', error)
+      console.error('[firebaseSyncService] Error code:', (error as any).code)
+      console.error('[firebaseSyncService] Error message:', (error as any).message)
+      console.error('[firebaseSyncService] Full error:', JSON.stringify(error, null, 2))
     }
   }
 
