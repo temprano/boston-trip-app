@@ -16,8 +16,43 @@ export function DayViewPage() {
   const setEvents = useAppStore((state) => state.setEvents)
   const currentItinerary = useAppStore((state) => state.currentItinerary)
 
-  // Group events by date
-  const eventsByDate = events.reduce(
+  // Helper function to convert time string (e.g., "1:00 pm") to minutes since midnight for sorting
+  const parseTimeToMinutes = (timeStr: string): number => {
+    const match = timeStr.match(/(\d{1,2}):(\d{2})\s*(am|pm)/i)
+    if (!match) return 0
+    
+    let hours = parseInt(match[1])
+    const minutes = parseInt(match[2])
+    const isPm = match[3].toLowerCase() === 'pm'
+    
+    // Convert to 24-hour format
+    if (isPm && hours !== 12) {
+      hours += 12
+    } else if (!isPm && hours === 12) {
+      hours = 0
+    }
+    
+    return hours * 60 + minutes
+  }
+
+  // Helper function to parse date string (handles both ISO YYYY-MM-DD and MM/DD/YYYY formats)
+  const parseDate = (dateStr: string): number => {
+    if (dateStr.includes('-')) {
+      return new Date(dateStr).getTime()
+    }
+    const [month, day, year] = dateStr.split('/')
+    return new Date(parseInt(year), parseInt(month) - 1, parseInt(day)).getTime()
+  }
+
+  // Sort events by date first, then by time within each date
+  const sortedEvents = [...events].sort((a, b) => {
+    const dateCompare = parseDate(a.date) - parseDate(b.date)
+    if (dateCompare !== 0) return dateCompare
+    return parseTimeToMinutes(a.time) - parseTimeToMinutes(b.time)
+  })
+
+  // Group sorted events by date
+  const eventsByDate = sortedEvents.reduce(
     (acc, event) => {
       if (!acc[event.date]) {
         acc[event.date] = []
@@ -28,19 +63,8 @@ export function DayViewPage() {
     {} as Record<string, Event[]>
   )
 
-  // Sort dates chronologically (handles both ISO YYYY-MM-DD and MM/DD/YYYY formats)
-  const sortedDates = Object.keys(eventsByDate).sort((a, b) => {
-    const parseDate = (dateStr: string) => {
-      // Check if it's ISO format (YYYY-MM-DD)
-      if (dateStr.includes('-')) {
-        return new Date(dateStr).getTime()
-      }
-      // Otherwise assume MM/DD/YYYY format
-      const [month, day, year] = dateStr.split('/')
-      return new Date(parseInt(year), parseInt(month) - 1, parseInt(day)).getTime()
-    }
-    return parseDate(a) - parseDate(b)
-  })
+  // Get sorted dates
+  const sortedDates = Object.keys(eventsByDate)
 
   const handleMapClick = (event: Event) => {
     setSelectedEvent(event)

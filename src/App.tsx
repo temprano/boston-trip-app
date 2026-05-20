@@ -6,10 +6,17 @@ import { travelersDataService } from './services/travelersDataService'
 import { baseAddressSyncService } from './services/baseAddressSyncService'
 import { localTravelersDataService } from './services/localTravelersDataService'
 import { syncLocalEventsToFirebaseOnce } from './services/syncLocalEventsToFirebase'
+import { addTestData } from './utils/testDataGenerator'
 import initialTravelers from './data/initialTravelers.json'
 import initialEvents from './data/initialEvents.json'
 import initialItineraryData from './data/initialItinerary.json'
 import './App.css'
+
+// Expose test data function to window for console debugging
+if (typeof window !== 'undefined') {
+  (window as any).addTestData = addTestData
+  console.log('[App] Exposed window.addTestData() for testing - run in console to add test event and traveler')
+}
 
 // Build version: LATEST
 function App() {
@@ -191,8 +198,8 @@ function App() {
         console.log('[App] Starting one-time sync of local events to Firebase...')
         await syncLocalEventsToFirebaseOnce(itineraryToUse.id)
         console.log('[App] ✓ One-time Firebase sync complete')
-        
         console.log('[App] ✓ All initialization complete')
+        console.log('[App] TIP: Run window.addTestData() in console to add test event and traveler for pull-to-refresh testing')
       } catch (err) {
         console.error('[App] Failed to initialize app:', err)
       }
