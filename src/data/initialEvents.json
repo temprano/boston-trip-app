@@ -29,20 +29,7 @@
     "eventImage": "/assets/bkgrd/cheers.png",
     "category": "Lunch"
   },
-  {
-    "id": "3",
-    "title": "PAUL REVERE HOUSE",
-    "venue": "Freedom Trail",
-    "date": "2026-05-27",
-    "time": "1:00 pm",
-    "nearestStopId": "place-haecl",
-    "address": {
-      "line1": "19 N Square",
-      "line2": "BOSTON MA 02113"
-    },
-    "eventImage": "/assets/bkgrd/revere.png",
-    "category": "Museum"
-  },
+
   {
     "id": "4",
     "title": "ATLANTA BRAVES BASEBALL",
