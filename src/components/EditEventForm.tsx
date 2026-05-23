@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { Event } from '../types'
-import { localEventsDataService } from '../services/localEventsDataService'
 
 // MBTA Quick Stops for nearestStopId selection
 const QUICK_STOPS = [

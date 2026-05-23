@@ -1,78 +1,13 @@
 import { Event } from '../types'
 
 const EVENTS_STORAGE_KEY = 'boston_events_local'
-const DELETION_LOG_KEY = 'boston_events_deletion_log'
-const DELETION_LOG_RETENTION_MS = 24 * 60 * 60 * 1000 // 24 hours
 
 /**
  * Local Events Data Service - stores events in localStorage
- * Primary source of truth. Firebase syncs changes from other users.
- * 
- * Uses a deletion log to prevent deleted events from being resurrected
- * when merging with remote data.
+ * Primary source of truth during offline use.
+ * Firebase is the permanent source of truth - deleted events are permanently removed from Firestore.
  */
 export const localEventsDataService = {
-  /**
-   * Get deletion log and clean up old entries
-   */
-  getDeletionLog(): Record<string, number> {
-    try {
-      const data = localStorage.getItem(DELETION_LOG_KEY)
-      const log = data ? JSON.parse(data) : {}
-      
-      // Clean up entries older than retention period
-      const now = Date.now()
-      const cleaned: Record<string, number> = {}
-      
-      Object.entries(log).forEach(([eventId, timestamp]: [string, number]) => {
-        if (now - timestamp < DELETION_LOG_RETENTION_MS) {
-          cleaned[eventId] = timestamp
-        }
-      })
-      
-      if (Object.keys(cleaned).length !== Object.keys(log).length) {
-        localStorage.setItem(DELETION_LOG_KEY, JSON.stringify(cleaned))
-      }
-      
-      return cleaned
-    } catch (error) {
-      console.error('Error reading deletion log:', error)
-      return {}
-    }
-  },
-
-  /**
-   * Add event to deletion log
-   */
-  logDeletion(eventId: string): void {
-    try {
-      const log = this.getDeletionLog()
-      log[eventId] = Date.now()
-      localStorage.setItem(DELETION_LOG_KEY, JSON.stringify(log))
-      console.log('[localEventsDataService] Logged deletion of event:', eventId)
-    } catch (error) {
-      console.error('Error logging deletion:', error)
-    }
-  },
-
-  /**
-   * Clear a deletion log entry (after Firebase confirms deletion)
-   */
-  clearDeletionLog(eventId?: string): void {
-    try {
-      if (eventId) {
-        const log = this.getDeletionLog()
-        delete log[eventId]
-        localStorage.setItem(DELETION_LOG_KEY, JSON.stringify(log))
-        console.log('[localEventsDataService] Cleared deletion log for event:', eventId)
-      } else {
-        localStorage.removeItem(DELETION_LOG_KEY)
-      }
-    } catch (error) {
-      console.error('Error clearing deletion log:', error)
-    }
-  },
-
   /**
    * Get all events from localStorage
    */
@@ -156,10 +91,6 @@ export const localEventsDataService = {
 
     events.splice(index, 1)
     this.saveEvents(events)
-    
-    // Log the deletion to prevent it from being re-added during merges
-    this.logDeletion(id)
-    
     return true
   },
 
@@ -197,31 +128,19 @@ export const localEventsDataService = {
 
   /**
    * Merge events from Firebase (for syncing with other users)
-   * Uses deletion log to prevent resurrecting deleted events
-   * Filters out both locally deleted events and events deleted by deletion log
+   * Since Firebase is permanent source of truth, just use what Firebase has
    */
-  mergeRemoteEvents(remoteEvents: Event[], deletedEventIds?: Set<string>): Event[] {
+  mergeRemoteEvents(remoteEvents: Event[]): Event[] {
     const localEvents = this.getEvents()
-    const deletionLog = this.getDeletionLog()
-    const allDeletedIds = new Set([...Object.keys(deletionLog), ...(deletedEventIds || [])])
-    
     const merged: Record<string, Event> = {}
 
-    // Add all local events (excluding deleted ones)
+    // Add all local events (offline-created events)
     localEvents.forEach((e) => {
-      if (!allDeletedIds.has(e.id)) {
-        merged[e.id] = e
-      }
+      merged[e.id] = e
     })
 
-    // Merge remote events (excluding deleted ones, remote events don't overwrite local)
+    // Merge remote events (Firebase is source of truth for deletions - deleted events won't be here)
     remoteEvents.forEach((remoteEvent) => {
-      // Don't add remote events that have been deleted locally
-      if (allDeletedIds.has(remoteEvent.id)) {
-        console.log('[localEventsDataService] Skipping deleted event in merge:', remoteEvent.id)
-        return
-      }
-      
       const localEvent = merged[remoteEvent.id]
       if (!localEvent) {
         // Remote event doesn't exist locally, add it
