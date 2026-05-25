@@ -9,7 +9,8 @@ import { eventDataService } from '../services/eventDataService'
 import { directionsService } from '../services/directionsService'
 import { firebaseSyncService } from '../services/firebaseSyncService'
 import { localEventsDataService } from '../services/localEventsDataService'
-import { useAppStore } from '../store/appStore'
+import { useAppStore, useIsOffline } from '../store/appStore'
+import { db } from '../services/firebase'
 
 interface EventCardProps {
   event: Event
@@ -18,6 +19,7 @@ interface EventCardProps {
 
 export function EventCard({ event, onMapClick }: EventCardProps) {
   const navigate = useNavigate()
+  const isOffline = useIsOffline()
   const [showEditForm, setShowEditForm] = useState(false)
   const [showDirections, setShowDirections] = useState(false)
   const [directionsLoading, setDirectionsLoading] = useState(false)
@@ -100,6 +102,11 @@ export function EventCard({ event, onMapClick }: EventCardProps) {
     try {
       console.log('[EventCard] handleSaveEvent called with updated event:', updatedEvent)
       
+      // Prevent save when offline (events can only be edited when online)
+      if (isOffline || !db) {
+        throw new Error('Cannot save events while offline. Please check your internet connection.')
+      }
+      
       if (!currentItinerary?.id) {
         console.error('[EventCard] No itinerary selected')
         throw new Error('No itinerary selected')
@@ -114,11 +121,16 @@ export function EventCard({ event, onMapClick }: EventCardProps) {
       console.error('[EventCard] Failed to save event:', err)
       throw err
     }
-  }, [currentItinerary, event.id])
+  }, [currentItinerary, event.id, isOffline])
 
   const handleDeleteEvent = useCallback(async (eventId: string) => {
     try {
       console.log('[EventCard] handleDeleteEvent called for event:', eventId)
+      
+      // Prevent delete when offline (events can only be deleted when online)
+      if (isOffline || !db) {
+        throw new Error('Cannot delete events while offline. Please check your internet connection.')
+      }
       
       if (!currentItinerary?.id) {
         console.error('[EventCard] No itinerary selected')
@@ -143,7 +155,7 @@ export function EventCard({ event, onMapClick }: EventCardProps) {
       console.error('[EventCard] Failed to delete event:', err)
       throw err
     }
-  }, [currentItinerary])
+  }, [currentItinerary, isOffline])
 
   return (
     <>
@@ -228,19 +240,21 @@ export function EventCard({ event, onMapClick }: EventCardProps) {
           {/* Edit Button - Lower Right Corner */}
           <button
             onClick={() => setShowEditForm(true)}
+            disabled={isOffline}
             style={{
               position: 'absolute',
               bottom: '12px',
               right: '12px',
               background: 'none',
               border: 'none',
-              cursor: 'pointer',
+              cursor: isOffline ? 'not-allowed' : 'pointer',
               padding: '4px 8px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              opacity: isOffline ? 0.5 : 1,
             }}
-            title="Edit event"
+            title={isOffline ? "Cannot edit events while offline" : "Edit event"}
           >
             <Edit2 style={{ width: '20px', height: '20px', color: '#2255cc' }} />
           </button>

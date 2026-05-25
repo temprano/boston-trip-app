@@ -3,7 +3,7 @@ import { Event } from '../types'
 import { DayEventsGroup } from '../components/DayEventsGroup'
 import { EventInfoPanel } from '../components/EventInfoPanel'
 import { EditEventForm } from '../components/EditEventForm'
-import { useAppStore } from '../store/appStore'
+import { useAppStore, useIsOffline } from '../store/appStore'
 import { Plus, Loader } from 'lucide-react'
 import { firebaseSyncService } from '../services/firebaseSyncService'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
@@ -12,18 +12,20 @@ export function DayViewPage() {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
   const [infoType, setInfoType] = useState<'map' | 'transit' | null>(null)
   const [showAddEventForm, setShowAddEventForm] = useState(false)
+  const isOffline = useIsOffline()
   const events = useAppStore((state) => state.events)
   const setEvents = useAppStore((state) => state.setEvents)
   const currentItinerary = useAppStore((state) => state.currentItinerary)
 
-  // Helper function to convert time string (e.g., "1:00 pm") to minutes since midnight for sorting
+  // Helper function to convert time string (e.g., "1:00 pm" or "7:00 p.m.") to minutes since midnight for sorting
   const parseTimeToMinutes = (timeStr: string): number => {
-    const match = timeStr.match(/(\d{1,2}):(\d{2})\s*(am|pm)/i)
+    // Handle both "pm"/"am" and "p.m."/"a.m." formats
+    const match = timeStr.match(/(\d{1,2}):(\d{2})\s*([ap]\.?m\.?)/i)
     if (!match) return 0
     
     let hours = parseInt(match[1])
     const minutes = parseInt(match[2])
-    const isPm = match[3].toLowerCase() === 'pm'
+    const isPm = match[3].toLowerCase().startsWith('p')
     
     // Convert to 24-hour format
     if (isPm && hours !== 12) {
@@ -97,6 +99,11 @@ export function DayViewPage() {
   })
 
   const handleAddEvent = async (newEvent: Event) => {
+    // Prevent adding events when offline
+    if (isOffline) {
+      throw new Error('Cannot add events while offline. Please check your internet connection.')
+    }
+    
     // Add to local state
     const updatedEvents = [...events, newEvent]
     setEvents(updatedEvents)
@@ -154,21 +161,23 @@ export function DayViewPage() {
         </h1>
         <button
           onClick={() => setShowAddEventForm(true)}
+          disabled={isOffline}
           style={{
             background: 'none',
             border: 'none',
-            cursor: 'pointer',
+            cursor: isOffline ? 'not-allowed' : 'pointer',
             padding: '8px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             color: '#ffffff',
-            opacity: 0.8,
+            opacity: isOffline ? 0.4 : 0.8,
             transition: 'opacity 0.2s',
           }}
-          onMouseEnter={e => (e.currentTarget.style.opacity = '1')}
-          onMouseLeave={e => (e.currentTarget.style.opacity = '0.8')}
-          aria-label="Add new event"
+          onMouseEnter={e => !isOffline && (e.currentTarget.style.opacity = '1')}
+          onMouseLeave={e => !isOffline && (e.currentTarget.style.opacity = '0.8')}
+          aria-label={isOffline ? "Cannot add events while offline" : "Add new event"}
+          title={isOffline ? "Cannot add events while offline" : undefined}
         >
           <div
             style={{

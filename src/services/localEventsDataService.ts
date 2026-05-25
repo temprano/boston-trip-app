@@ -127,30 +127,13 @@ export const localEventsDataService = {
   },
 
   /**
-   * Merge events from Firebase (for syncing with other users)
-   * Since Firebase is permanent source of truth, just use what Firebase has
+   * Replace local events with events from Firebase
+   * Firestore is the single source of truth - no merging
+   * Since events can only be created/edited/deleted online,
+   * we can safely replace local cache entirely on sync
    */
-  mergeRemoteEvents(remoteEvents: Event[]): Event[] {
-    const localEvents = this.getEvents()
-    const merged: Record<string, Event> = {}
-
-    // Add all local events (offline-created events)
-    localEvents.forEach((e) => {
-      merged[e.id] = e
-    })
-
-    // Merge remote events (Firebase is source of truth for deletions - deleted events won't be here)
-    remoteEvents.forEach((remoteEvent) => {
-      const localEvent = merged[remoteEvent.id]
-      if (!localEvent) {
-        // Remote event doesn't exist locally, add it
-        merged[remoteEvent.id] = remoteEvent
-      }
-      // If event exists locally, keep the local version (user's version is authoritative)
-    })
-
-    const mergedArray = Object.values(merged)
-    this.saveEvents(mergedArray)
-    return mergedArray
+  replaceEvents(remoteEvents: Event[]): Event[] {
+    this.saveEvents(remoteEvents)
+    return remoteEvents
   },
 }

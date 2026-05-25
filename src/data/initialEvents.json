@@ -15,6 +15,21 @@
     "category": "Museum"
   },
   {
+    "id": "evt_2b7d4f9f",
+    "title": "DINNER",
+    "venue": "Chart House",
+    "date": "2026-05-26",
+    "time": "7:00 pm",
+    "phone": "",
+    "nearestStopId": "place-aqua",
+    "address": {
+      "line1": "60 Long Wharf",
+      "line2": "BOSTON MA 02110"
+    },
+    "eventImage": "",
+    "category": "Dinner"
+  },
+  {
     "id": "2",
     "title": "CHEERS",
     "venue": "Downtown Boston",
@@ -29,41 +44,13 @@
     "eventImage": "/assets/bkgrd/cheers.png",
     "category": "Lunch"
   },
-
-  {
-    "id": "4",
-    "title": "ATLANTA BRAVES BASEBALL",
-    "venue": "Fenway Park",
-    "date": "2026-05-27",
-    "time": "6:45 pm",
-    "nearestStopId": "place-fenwy",
-    "address": {
-      "line1": "4 Jersey Street",
-      "line2": "BOSTON MA 02115"
-    },
-    "eventImage": "/assets/bkgrd/boston_braves.png",
-    "category": "Sports"
-  },
-  {
-    "id": "5",
-    "title": "BOSTON DUCK BOAT",
-    "venue": "465 Huntington Ave",
-    "date": "2026-05-28",
-    "time": "1:00 pm",
-    "nearestStopId": "place-north",
-    "address": {
-      "line1": "1 Science Park",
-      "line2": "BOSTON MA 02114"
-    },
-    "eventImage": "/assets/bkgrd/duck.png",
-    "category": "Tour"
-  },
   {
     "id": "6",
     "title": "FREEDOM TRAIL",
     "venue": "Boston Commons",
     "date": "2026-05-27",
     "time": "1:00 pm",
+    "phone": "",
     "nearestStopId": "place-pktrm",
     "address": {
       "line1": "138 Tremont St",
@@ -73,18 +60,19 @@
     "category": "Tour"
   },
   {
-    "id": "7",
+    "id": "4",
     "title": "ATLANTA BRAVES BASEBALL",
     "venue": "Fenway Park",
-    "date": "2026-05-28",
-    "time": "4:00 pm",
+    "date": "2026-05-27",
+    "time": "6:45 pm",
+    "phone": "",
     "nearestStopId": "place-fenwy",
     "address": {
       "line1": "4 Jersey Street",
       "line2": "BOSTON MA 02115"
     },
     "eventImage": "/assets/bkgrd/boston_braves.png",
-    "category": "Tour"
+    "category": "Sports"
   },
   {
     "id": "8",
@@ -99,6 +87,51 @@
       "line2": "HYANNIS MA 02601"
     },
     "eventImage": "/assets/bkgrd/van.png",
+    "category": "Tour"
+  },
+  {
+    "id": "5",
+    "title": "BOSTON DUCK BOAT",
+    "venue": "465 Huntington Ave",
+    "date": "2026-05-28",
+    "time": "1:00 pm",
+    "phone": "",
+    "nearestStopId": "place-north",
+    "address": {
+      "line1": "1 Science Park",
+      "line2": "BOSTON MA 02114"
+    },
+    "eventImage": "/assets/bkgrd/duck.png",
+    "category": "Tour"
+  },
+  {
+    "id": "7",
+    "title": "ATLANTA BRAVES BASEBALL",
+    "venue": "Fenway Park",
+    "date": "2026-05-28",
+    "time": "4:00 pm",
+    "phone": "",
+    "nearestStopId": "place-fenwy",
+    "address": {
+      "line1": "4 Jersey Street",
+      "line2": "BOSTON MA 02115"
+    },
+    "eventImage": "/assets/bkgrd/boston_braves.png",
+    "category": "Tour"
+  },
+  {
+    "id": "11",
+    "title": "BAY SPIRIT TOUR",
+    "venue": "Lighthouses & Cocktails",
+    "date": "2026-05-29",
+    "time": "3:30 pm",
+    "phone": "508-771-0107",
+    "nearestStopId": "place-sstat",
+    "address": {
+      "line1": "180 Ocean Street Slip #1",
+      "line2": "HYANNIS MA 02601"
+    },
+    "eventImage": "/assets/bkgrd/lighthouse.png",
     "category": "Tour"
   },
   {

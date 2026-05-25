@@ -15,10 +15,11 @@ import { localEventsDataService } from './localEventsDataService'
  * Firebase Sync Service - handles real-time sync between users
  * 
  * Architecture:
- * 1. LocalStorage = Primary source during offline use
- * 2. Firebase = Permanent truth (deleted events are permanently removed)
- * 3. Real-time listeners sync Firebase changes to all devices
- * 4. Deletions are permanent - deleted docs don't appear in future syncs
+ * 1. Firestore = Single source of truth
+ * 2. LocalStorage = Offline cache (read-only when offline)
+ * 3. Real-time listeners pull from Firebase and replace local cache
+ * 4. Events can only be created/edited/deleted when online
+ * 5. No merge logic - Firebase always wins
  */
 
 class FirebaseSyncService {
@@ -27,7 +28,7 @@ class FirebaseSyncService {
 
   /**
    * Initialize real-time sync for events
-   * Listens for changes from other users and merges them locally
+   * Listens for changes from Firestore and replaces local cache
    * Safe to call multiple times - only subscribes once per itinerary
    */
   subscribeToEventSync(itineraryId: string): () => void {
@@ -66,16 +67,12 @@ class FirebaseSyncService {
               ...doc.data(),
             })) as Event[]
 
-            // Merge remote events with local, keeping local as primary
-            // Firebase is source of truth - deleted events won't be in the snapshot
-            const mergedEvents = localEventsDataService.mergeRemoteEvents(remoteEvents)
+            // Replace local cache with Firestore data (Firestore is source of truth)
+            const events = localEventsDataService.replaceEvents(remoteEvents)
             
-            // Save merged events to localStorage
-            localStorage.setItem('boston_events_local', JSON.stringify(mergedEvents))
-            
-            // Update app state with merged events
-            useAppStore.getState().setEvents(mergedEvents)
-            console.log('[firebaseSyncService] ✓ Events updated in store:', mergedEvents.length, 'events')
+            // Update app state
+            useAppStore.getState().setEvents(events)
+            console.log('[firebaseSyncService] ✓ Events updated in store:', events.length, 'events')
           } catch (error) {
             console.error('Error processing Firebase snapshot:', error)
           }
@@ -136,7 +133,8 @@ class FirebaseSyncService {
 
   /**
    * Pull all events from Firebase (one-time sync)
-   * Useful on app startup
+   * Useful on app startup or pull-to-refresh
+   * Replaces local cache entirely with Firestore data
    */
   async pullEventsFromFirebase(itineraryId: string): Promise<Event[]> {
     console.log('[firebaseSyncService] pullEventsFromFirebase called for itinerary:', itineraryId)
@@ -160,10 +158,10 @@ class FirebaseSyncService {
         ...doc.data(),
       })) as Event[]
 
-      // Merge with local - Firebase is source of truth (deleted events aren't here)
-      const merged = localEventsDataService.mergeRemoteEvents(remoteEvents)
-      console.log('[firebaseSyncService] Merged events (local + remote)')
-      return merged
+      // Replace local cache with Firestore data (source of truth)
+      const events = localEventsDataService.replaceEvents(remoteEvents)
+      console.log('[firebaseSyncService] ✓ Local cache replaced with Firestore data')
+      return events
     } catch (error) {
       console.error('[firebaseSyncService] Firebase pull failed:', error)
       // Return local events if pull fails
