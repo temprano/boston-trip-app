@@ -5,7 +5,6 @@ import { eventDataService } from './services/eventDataService'
 import { travelersDataService } from './services/travelersDataService'
 import { baseAddressSyncService } from './services/baseAddressSyncService'
 import { localTravelersDataService } from './services/localTravelersDataService'
-import { syncLocalEventsToFirebaseOnce } from './services/syncLocalEventsToFirebase'
 import { addTestData } from './utils/testDataGenerator'
 import initialTravelers from './data/initialTravelers.json'
 import initialEvents from './data/initialEvents.json'
@@ -193,11 +192,6 @@ function App() {
         })
         
         console.log('[App] ✓ Firebase sync initialized')
-
-        // One-time sync: push local events with nearestStopId up to Firebase
-        console.log('[App] Starting one-time sync of local events to Firebase...')
-        await syncLocalEventsToFirebaseOnce(itineraryToUse.id)
-        console.log('[App] ✓ One-time Firebase sync complete')
         console.log('[App] ✓ All initialization complete')
         console.log('[App] TIP: Run window.addTestData() in console to add test event and traveler for pull-to-refresh testing')
       } catch (err) {
